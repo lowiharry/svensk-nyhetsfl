@@ -14,7 +14,143 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      article_interactions: {
+        Row: {
+          article_id: string
+          created_at: string
+          id: string
+          interaction_type: string
+          session_id: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string
+          id?: string
+          interaction_type: string
+          session_id: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_interactions_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      articles: {
+        Row: {
+          category: string | null
+          comments_count: number | null
+          content: string | null
+          created_at: string
+          dislikes_count: number | null
+          id: string
+          image_url: string | null
+          likes_count: number | null
+          published_at: string
+          source_name: string
+          source_url: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          comments_count?: number | null
+          content?: string | null
+          created_at?: string
+          dislikes_count?: number | null
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          published_at: string
+          source_name: string
+          source_url: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          comments_count?: number | null
+          content?: string | null
+          created_at?: string
+          dislikes_count?: number | null
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          published_at?: string
+          source_name?: string
+          source_url?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      comments: {
+        Row: {
+          article_id: string
+          author_name: string
+          content: string
+          created_at: string
+          id: string
+          is_moderated: boolean | null
+          likes_count: number | null
+          parent_id: string | null
+          session_id: string
+          updated_at: string
+        }
+        Insert: {
+          article_id: string
+          author_name?: string
+          content: string
+          created_at?: string
+          id?: string
+          is_moderated?: boolean | null
+          likes_count?: number | null
+          parent_id?: string | null
+          session_id: string
+          updated_at?: string
+        }
+        Update: {
+          article_id?: string
+          author_name?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_moderated?: boolean | null
+          likes_count?: number | null
+          parent_id?: string | null
+          session_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
