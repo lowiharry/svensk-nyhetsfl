@@ -31,23 +31,25 @@ const fetchAndSaveArticles = async () => {
       const feed = await parser.parseURL(feedSource.url);
       console.log(`Found ${feed.items.length} articles in the ${feedSource.name} feed.`);
 
-      const articlesToUpsert = feed.items.map(item => {
-        const { title, link, pubDate, content } = item;
-
-        // Create a summary by stripping HTML tags from the content
-        const summary = content ? content.replace(/<[^>]*>?/gm, '') : null;
-
-        return {
-          title: title,
-          source_url: link,
-          published_at: pubDate ? new Date(pubDate) : new Date(),
-          source_name: feedSource.name,
-          image_url: null,
-          summary: summary,
-          content: summary,
-          category: 'general',
-        };
-      });
+      const articlesToUpsert = feed.items
+        .map(item => {
+          const { title, link, pubDate, content } = item;
+          if (!title || !link) {
+            return null;
+          }
+          const summary = content ? content.replace(/<[^>]*>?/gm, '') : null;
+          return {
+            title: title,
+            source_url: link,
+            published_at: pubDate ? new Date(pubDate) : new Date(),
+            source_name: feedSource.name,
+            image_url: null,
+            summary: summary,
+            content: summary,
+            category: 'general',
+          };
+        })
+        .filter(Boolean); // Remove any null entries
 
       if (articlesToUpsert.length > 0) {
         console.log(`Upserting ${articlesToUpsert.length} articles from ${feedSource.name} to Supabase...`);

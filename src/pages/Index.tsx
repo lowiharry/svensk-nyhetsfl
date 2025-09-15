@@ -28,7 +28,7 @@ const Index = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   // Fetch articles
-  const { data: articles = [], isLoading, refetch } = useQuery({
+  const { data: articles = [], isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['articles', searchQuery, selectedCategory, refreshKey],
     queryFn: async () => {
       let query = supabase
@@ -88,7 +88,11 @@ const Index = () => {
         <div className="flex items-center justify-between mb-6 p-4 rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 border">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              {isRefetching ? (
+                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              ) : (
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              )}
               <span className="text-sm font-medium">Live Updates</span>
             </div>
             <span className="text-sm text-muted-foreground">
