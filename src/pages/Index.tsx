@@ -34,6 +34,7 @@ const Index = () => {
       let query = supabase
         .from('articles')
         .select('*')
+        .neq('source_name', 'Test Source')
         .order('published_at', { ascending: false })
         .limit(50);
 
