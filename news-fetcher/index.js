@@ -16,53 +16,60 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 const parser = new Parser();
 
-const FEED_URL = 'https://feeds.expressen.se/nyheter/';
-const SOURCE_NAME = 'Expressen';
+const FEEDS = [
+  { name: 'Expressen', url: 'https://feeds.expressen.se/nyheter/' },
+  { name: 'The Local', url: 'http://www.thelocal.se/RSS/theLocal.xml' }
+];
 
 const fetchAndSaveArticles = async () => {
-  console.log('Fetching articles from Expressen RSS feed...');
+  console.log('Starting news fetch cycle...');
 
-  try {
-    const feed = await parser.parseURL(FEED_URL);
-    console.log(`Found ${feed.items.length} articles in the feed.`);
+  for (const feedSource of FEEDS) {
+    console.log(`Fetching articles from ${feedSource.name}...`);
 
-    const articlesToUpsert = feed.items.map(item => {
-      const { title, link, pubDate, content } = item;
+    try {
+      const feed = await parser.parseURL(feedSource.url);
+      console.log(`Found ${feed.items.length} articles in the ${feedSource.name} feed.`);
 
-      // Create a summary by stripping HTML tags from the content
-      const summary = content ? content.replace(/<[^>]*>?/gm, '') : null;
+      const articlesToUpsert = feed.items.map(item => {
+        const { title, link, pubDate, content } = item;
 
-      return {
-        title: title,
-        source_url: link,
-        published_at: pubDate ? new Date(pubDate) : new Date(),
-        source_name: SOURCE_NAME,
-        image_url: null,
-        summary: summary,
-        content: summary, // Using summary for content as well, as full content is not in RSS
-        category: 'general', // Default category
-      };
-    });
+        // Create a summary by stripping HTML tags from the content
+        const summary = content ? content.replace(/<[^>]*>?/gm, '') : null;
 
-    if (articlesToUpsert.length > 0) {
-      console.log(`Upserting ${articlesToUpsert.length} articles to Supabase...`);
+        return {
+          title: title,
+          source_url: link,
+          published_at: pubDate ? new Date(pubDate) : new Date(),
+          source_name: feedSource.name,
+          image_url: null,
+          summary: summary,
+          content: summary,
+          category: 'general',
+        };
+      });
 
-      const { data, error } = await supabase
-        .from('articles')
-        .upsert(articlesToUpsert, { onConflict: 'source_url' });
+      if (articlesToUpsert.length > 0) {
+        console.log(`Upserting ${articlesToUpsert.length} articles from ${feedSource.name} to Supabase...`);
 
-      if (error) {
-        console.error('Error upserting articles:', error);
+        const { data, error } = await supabase
+          .from('articles')
+          .upsert(articlesToUpsert, { onConflict: 'source_url' });
+
+        if (error) {
+          console.error(`Error upserting articles from ${feedSource.name}:`, error);
+        } else {
+          console.log(`Successfully upserted articles from ${feedSource.name}.`);
+        }
       } else {
-        console.log('Successfully upserted articles.');
+        console.log(`No new articles to save from ${feedSource.name}.`);
       }
-    } else {
-      console.log('No new articles to save.');
-    }
 
-  } catch (error) {
-    console.error('Failed to fetch or process articles:', error);
+    } catch (error) {
+      console.error(`Failed to fetch or process articles from ${feedSource.name}:`, error);
+    }
   }
+  console.log('News fetch cycle complete.');
 };
 
 // Fetch articles immediately on start, then every minute
