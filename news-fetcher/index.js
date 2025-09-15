@@ -65,4 +65,6 @@ const fetchAndSaveArticles = async () => {
   }
 };
 
+// Fetch articles immediately on start, then every minute
 fetchAndSaveArticles();
+setInterval(fetchAndSaveArticles, 60000);
