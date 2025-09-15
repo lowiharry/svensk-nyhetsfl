@@ -1,4 +1,4 @@
-import Parser from 'rss-parser';
+import fetch from 'node-fetch';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 
@@ -7,91 +7,72 @@ dotenv.config();
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+const worldNewsApiKey = process.env.WORLD_NEWS_API_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Supabase URL or service key not found. Make sure you have a .env file in the news-fetcher directory with all the required keys.');
+if (!supabaseUrl || !supabaseKey || !worldNewsApiKey) {
+  console.error('Supabase URL, service key, or World News API key not found. Make sure you have a .env file in the news-fetcher directory with all the required keys.');
   process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
-const parser = new Parser();
 
-const NEWS_SOURCES = [
-  {
-    url: 'https://feeds.expressen.se/nyheter/',
-    name: 'Expressen'
-  },
-  {
-    url: 'https://www.svt.se/nyheter/rss.xml',
-    name: 'SVT Nyheter'
-  },
-  {
-    url: 'https://www.dn.se/rss/',
-    name: 'Dagens Nyheter'
-  },
-  {
-    url: 'https://www.svd.se/rss.xml',
-    name: 'Svenska Dagbladet'
-  }
-];
+const API_URL = 'https://api.worldnewsapi.com/top-news?source-country=se';
 
-const fetchFromSource = async (source) => {
-  console.log(`Fetching articles from ${source.name}...`);
+const fetchAndSaveArticles = async () => {
+  console.log('Starting news fetch from World News API...');
+
   try {
-    const feed = await parser.parseURL(source.url);
-    console.log(`Found ${feed.items.length} articles from ${source.name}`);
+    const response = await fetch(API_URL, {
+      headers: {
+        'x-api-key': worldNewsApiKey
+      }
+    });
 
-    return feed.items
-      .map(item => {
-        const { title, link, pubDate, content, contentSnippet } = item;
-        if (!title || !link) {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const articles = data.top_news[0]?.news || [];
+
+    console.log(`Found ${articles.length} articles from the World News API.`);
+
+    const articlesToUpsert = articles
+      .map(article => {
+        if (!article.title || !article.url) {
           return null;
         }
-        const summary = content ? content.replace(/<[^>]*>?/gm, '') : contentSnippet || null;
         return {
-          title: title,
-          source_url: link,
-          published_at: pubDate ? new Date(pubDate) : new Date(),
-          source_name: source.name,
-          image_url: null,
-          summary: summary,
-          content: summary,
+          title: article.title,
+          source_url: article.url,
+          published_at: article.publish_date ? new Date(article.publish_date) : new Date(),
+          source_name: article.source_country, // The API returns the country code 'se'
+          image_url: null, // As per user request
+          summary: article.summary,
+          content: article.summary, // Using summary for content
           category: 'general',
         };
       })
       .filter(Boolean);
-  } catch (error) {
-    console.error(`Failed to fetch from ${source.name}:`, error.message);
-    return [];
-  }
-};
 
-const fetchAndSaveArticles = async () => {
-  console.log('Fetching latest news from all Swedish sources...');
+    if (articlesToUpsert.length > 0) {
+      console.log(`Upserting ${articlesToUpsert.length} articles to Supabase...`);
 
-  const allArticles = [];
+      const { error } = await supabase
+        .from('articles')
+        .upsert(articlesToUpsert, { onConflict: 'source_url' });
 
-  // Fetch from all sources in parallel
-  const fetchPromises = NEWS_SOURCES.map(source => fetchFromSource(source));
-  const results = await Promise.all(fetchPromises);
-
-  // Combine all articles
-  results.forEach(articles => allArticles.push(...articles));
-
-  if (allArticles.length > 0) {
-    console.log(`Upserting ${allArticles.length} articles to Supabase...`);
-
-    const { data, error } = await supabase
-      .from('articles')
-      .upsert(allArticles, { onConflict: 'source_url' });
-
-    if (error) {
-      console.error('Error upserting articles:', error);
+      if (error) {
+        console.error('Error upserting articles:', error);
+      } else {
+        console.log('Successfully upserted articles.');
+      }
     } else {
-      console.log(`Successfully upserted articles from ${NEWS_SOURCES.length} sources.`);
+      console.log('No new articles to save.');
     }
-  } else {
-    console.log('No new articles to save.');
+
+  } catch (error) {
+    console.error('Failed to fetch or process articles from World News API:', error);
   }
 
   console.log('News fetch cycle complete.');
