@@ -16,16 +16,23 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 const parser = new Parser();
 
-// List of news sources to fetch from.
-// Note: Many Swedish news sites block automated access to their RSS feeds.
-// This script will attempt to fetch from all sources, but some may fail.
 const NEWS_SOURCES = [
-  { name: 'Expressen', url: 'https://feeds.expressen.se/nyheter/' },
-  { name: 'The Local', url: 'http://www.thelocal.se/RSS/theLocal.xml' },
-  // The following sources are from the user's main branch, but are likely to be blocked by robots.txt
-  // { name: 'SVT Nyheter', url: 'https://www.svt.se/nyheter/rss.xml' },
-  // { name: 'Dagens Nyheter', url: 'https://www.dn.se/rss/' },
-  // { name: 'Svenska Dagbladet', url: 'https://www.svd.se/rss.xml' }
+  {
+    url: 'https://feeds.expressen.se/nyheter/',
+    name: 'Expressen'
+  },
+  {
+    url: 'https://www.svt.se/nyheter/rss.xml',
+    name: 'SVT Nyheter'
+  },
+  {
+    url: 'https://www.dn.se/rss/',
+    name: 'Dagens Nyheter'
+  },
+  {
+    url: 'https://www.svd.se/rss.xml',
+    name: 'Svenska Dagbladet'
+  }
 ];
 
 const fetchFromSource = async (source) => {
@@ -60,7 +67,7 @@ const fetchFromSource = async (source) => {
 };
 
 const fetchAndSaveArticles = async () => {
-  console.log('Fetching latest news from all sources...');
+  console.log('Fetching latest news from all Swedish sources...');
 
   const allArticles = [];
 
@@ -74,7 +81,7 @@ const fetchAndSaveArticles = async () => {
   if (allArticles.length > 0) {
     console.log(`Upserting ${allArticles.length} articles to Supabase...`);
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('articles')
       .upsert(allArticles, { onConflict: 'source_url' });
 
