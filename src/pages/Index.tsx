@@ -18,7 +18,6 @@ interface Article {
   category: string;
   likes_count: number;
   dislikes_count: number;
-  comments_count: number;
 }
 
 const Index = () => {
@@ -67,14 +66,6 @@ const Index = () => {
     });
   };
 
-  const handleOpenComments = (articleId: string) => {
-    // TODO: Implement comments modal/drawer
-    console.log('Open comments for article:', articleId);
-    toast({
-      title: "Comments",
-      description: "Comments feature coming soon!"
-    });
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -189,7 +180,6 @@ const Index = () => {
               <NewsCard
                 key={article.id}
                 article={article}
-                onOpenComments={handleOpenComments}
               />
             ))}
           </div>

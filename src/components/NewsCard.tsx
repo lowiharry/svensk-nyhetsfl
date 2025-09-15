@@ -18,22 +18,19 @@ interface Article {
   category: string;
   likes_count: number;
   dislikes_count: number;
-  comments_count: number;
 }
 
 interface NewsCardProps {
   article: Article;
-  onOpenComments: (articleId: string) => void;
 }
 
-export const NewsCard = ({ article, onOpenComments }: NewsCardProps) => {
+export const NewsCard = ({ article }: NewsCardProps) => {
   const { toast } = useToast();
   const [sessionId, setSessionId] = useState<string>('');
   const [userInteraction, setUserInteraction] = useState<'like' | 'dislike' | null>(null);
   const [localCounts, setLocalCounts] = useState({
     likes: article.likes_count,
-    dislikes: article.dislikes_count,
-    comments: article.comments_count
+    dislikes: article.dislikes_count
   });
 
   useEffect(() => {
@@ -230,16 +227,6 @@ export const NewsCard = ({ article, onOpenComments }: NewsCardProps) => {
             >
               <ThumbsDown className="w-4 h-4" />
               {localCounts.dislikes}
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onOpenComments(article.id)}
-              className="flex items-center gap-1"
-            >
-              <MessageCircle className="w-4 h-4" />
-              {localCounts.comments}
             </Button>
           </div>
           
