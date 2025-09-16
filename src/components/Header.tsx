@@ -34,17 +34,17 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4">
+      <div className="container flex h-14 sm:h-16 items-center justify-between px-2 sm:px-4">
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-sm">🇸🇪</span>
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-white font-bold text-xs sm:text-sm">🇸🇪</span>
           </div>
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate">
               Sweden Update
             </h1>
-            <p className="text-xs text-muted-foreground hidden sm:block">Latest Swedish News</p>
+            <p className="text-xs text-muted-foreground hidden md:block">Latest Swedish News</p>
           </div>
         </div>
 
@@ -58,22 +58,22 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
                 placeholder="Search news..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 h-10"
               />
             </div>
-            <Button type="submit" size="sm">
+            <Button type="submit" size="sm" className="h-10 px-4">
               Search
             </Button>
           </form>
         </div>
 
         {/* Desktop Category Filter */}
-        <div className="hidden lg:flex items-center gap-2">
-          {categories.slice(0, 5).map((category) => (
+        <div className="hidden xl:flex items-center gap-2">
+          {categories.slice(0, 4).map((category) => (
             <Badge
               key={category}
               variant={selectedCategory === category ? 'default' : 'outline'}
-              className="cursor-pointer capitalize"
+              className="cursor-pointer capitalize h-8 px-3 text-xs hover:bg-accent hover:text-accent-foreground transition-colors"
               onClick={() => onCategoryFilter(category)}
             >
               {category === 'all' ? 'All' : category}
@@ -82,11 +82,12 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
         </div>
 
         {/* Right side controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="h-9 w-9 p-0"
           >
             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </Button>
@@ -95,7 +96,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
           <Button
             variant="outline"
             size="sm"
-            className="lg:hidden"
+            className="lg:hidden h-9 w-9 p-0"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -106,7 +107,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden border-t bg-background/95 backdrop-blur">
-          <div className="container p-4">
+          <div className="container p-3 sm:p-4">
             {/* Mobile Search */}
             <form onSubmit={handleSearch} className="flex gap-2 mb-4">
               <div className="relative flex-1">
@@ -116,21 +117,21 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
                   placeholder="Search news..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 h-11"
                 />
               </div>
-              <Button type="submit" size="sm">
+              <Button type="submit" size="sm" className="h-11 px-4">
                 Search
               </Button>
             </form>
 
             {/* Mobile Categories */}
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {categories.map((category) => (
                 <Badge
                   key={category}
                   variant={selectedCategory === category ? 'default' : 'outline'}
-                  className="cursor-pointer capitalize"
+                  className="cursor-pointer capitalize h-10 px-3 text-sm justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
                   onClick={() => {
                     onCategoryFilter(category);
                     setIsMobileMenuOpen(false);

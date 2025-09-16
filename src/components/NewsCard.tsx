@@ -170,31 +170,34 @@ export const NewsCard = ({ article, onOpenComments }: NewsCardProps) => {
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-300">
-      <CardHeader className="pb-3">
+    <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+      <CardHeader className="pb-3 flex-shrink-0">
         <div className="flex justify-between items-start gap-3">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Badge className={`${getSourceColor(article.source_name)} text-white`}>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <Badge className={`${getSourceColor(article.source_name)} text-white text-xs px-2 py-1`}>
                 {article.source_name}
               </Badge>
-              <Badge variant="outline" className="capitalize">
+              <Badge variant="outline" className="capitalize text-xs px-2 py-1">
                 {article.category}
               </Badge>
             </div>
-            <h3 className="font-bold text-lg leading-tight mb-2 line-clamp-2">
+            <h3 className="font-bold text-base sm:text-lg leading-tight mb-2 line-clamp-2">
               {article.title}
             </h3>
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              {formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="truncate">
+                {formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}
+              </span>
             </div>
           </div>
           {article.image_url && (
             <img 
               src={article.image_url} 
               alt={article.title}
-              className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+              className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
+              loading="lazy"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
@@ -203,63 +206,65 @@ export const NewsCard = ({ article, onOpenComments }: NewsCardProps) => {
         </div>
       </CardHeader>
       
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 flex-1 flex flex-col">
         {article.summary && (
-          <p className="text-muted-foreground mb-4 line-clamp-3">
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">
             {article.summary}
           </p>
         )}
         
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-auto">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
               variant={userInteraction === 'like' ? 'default' : 'outline'}
               size="sm"
               onClick={() => handleInteraction('like')}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 h-9 px-3 text-xs"
             >
-              <ThumbsUp className="w-4 h-4" />
-              {localCounts.likes}
+              <ThumbsUp className="w-3 h-3" />
+              <span className="hidden xs:inline">{localCounts.likes}</span>
             </Button>
             
             <Button
               variant={userInteraction === 'dislike' ? 'destructive' : 'outline'}
               size="sm"
               onClick={() => handleInteraction('dislike')}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 h-9 px-3 text-xs"
             >
-              <ThumbsDown className="w-4 h-4" />
-              {localCounts.dislikes}
+              <ThumbsDown className="w-3 h-3" />
+              <span className="hidden xs:inline">{localCounts.dislikes}</span>
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={() => onOpenComments(article.id)}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 h-9 px-3 text-xs"
             >
-              <MessageCircle className="w-4 h-4" />
-              {localCounts.comments}
+              <MessageCircle className="w-3 h-3" />
+              <span className="hidden xs:inline">{localCounts.comments}</span>
             </Button>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
               onClick={handleShare}
+              className="h-9 px-3 flex-1 sm:flex-initial"
             >
-              <Share2 className="w-4 h-4" />
+              <Share2 className="w-3 h-3 sm:mr-1" />
+              <span className="hidden sm:inline text-xs">Share</span>
             </Button>
             
             <Button
               variant="secondary"
               size="sm"
               onClick={() => window.open(article.source_url, '_blank')}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 h-9 px-3 flex-1 sm:flex-initial"
             >
-              <ExternalLink className="w-4 h-4" />
-              Read More
+              <ExternalLink className="w-3 h-3" />
+              <span className="text-xs">Read More</span>
             </Button>
           </div>
         </div>

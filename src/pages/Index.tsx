@@ -83,10 +83,10 @@ const Index = () => {
         selectedCategory={selectedCategory}
       />
       
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Status Bar */}
-        <div className="flex items-center justify-between mb-6 p-4 rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 border">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 border gap-3 sm:gap-0">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-sm font-medium">Live Updates</span>
@@ -179,7 +179,7 @@ const Index = () => {
 
         {/* News Grid */}
         {articles.length > 0 && (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {articles.map((article) => (
               <NewsCard
                 key={article.id}
