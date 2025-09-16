@@ -1,12 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchNews } from '@/services/news';
+import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { Article } from '@/types';
+
+interface Article {
+  id: string;
+  title: string;
+  summary: string | null;
+  image_url: string | null;
+  source_name: string;
+  source_url: string;
+  published_at: string;
+  category: string;
+  likes_count: number;
+  dislikes_count: number;
+  comments_count: number;
+}
 
 const Index = () => {
   const { toast } = useToast();
@@ -17,7 +30,30 @@ const Index = () => {
   // Fetch articles
   const { data: articles = [], isLoading, refetch } = useQuery({
     queryKey: ['articles', searchQuery, selectedCategory, refreshKey],
-    queryFn: () => fetchNews({ searchQuery, selectedCategory }),
+    queryFn: async () => {
+      let query = supabase
+        .from('articles')
+        .select('*')
+        .order('published_at', { ascending: false })
+        .limit(50);
+
+      if (selectedCategory !== 'all') {
+        query = query.eq('category', selectedCategory);
+      }
+
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,summary.ilike.%${searchQuery}%`);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Error fetching articles:', error);
+        return [];
+      }
+
+      return data as Article[];
+    },
     refetchInterval: 5000, // Refresh every 5 seconds
   });
 
