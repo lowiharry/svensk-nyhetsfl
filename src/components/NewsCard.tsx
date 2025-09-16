@@ -6,6 +6,7 @@ import { ThumbsUp, ThumbsDown, MessageCircle, Share2, ExternalLink, Clock } from
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
+import { stripHtml } from '@/lib/utils';
 
 interface Article {
   id: string;
@@ -183,7 +184,7 @@ export const NewsCard = ({ article, onOpenComments }: NewsCardProps) => {
               </Badge>
             </div>
             <h3 className="font-bold text-base sm:text-lg leading-tight mb-2 line-clamp-2">
-              {article.title}
+              {stripHtml(article.title)}
             </h3>
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
@@ -209,7 +210,7 @@ export const NewsCard = ({ article, onOpenComments }: NewsCardProps) => {
       <CardContent className="pt-0 flex-1 flex flex-col">
         {article.summary && (
           <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">
-            {article.summary}
+            {stripHtml(article.summary)}
           </p>
         )}
         
