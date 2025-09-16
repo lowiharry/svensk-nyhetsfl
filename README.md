@@ -60,6 +60,16 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Backend Service
+
+The backend service for fetching news is implemented as a simple Node.js script in `src/backend/news-fetcher.cjs`. Due to environment limitations, this script is not run automatically. To update the news, you need to run this script manually:
+
+```sh
+node src/backend/news-fetcher.cjs
+```
+
+This will fetch the latest news and update the `public/articles.json` file. The frontend will then automatically display the new articles.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/0bcce047-b64e-44c0-90ff-1ae925fcef41) and click on Share -> Publish.
