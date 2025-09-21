@@ -99,22 +99,29 @@ serve(async (req) => {
     console.log(`Total articles fetched: ${allArticles.length}`)
 
     if (allArticles.length > 0) {
+      // Remove duplicates by source_url to prevent database conflicts
+      const uniqueArticles = allArticles.filter((article, index, self) => 
+        index === self.findIndex(a => a.source_url === article.source_url)
+      )
+      
+      console.log(`Unique articles after deduplication: ${uniqueArticles.length}`)
+      
       const { data, error } = await supabaseClient
         .from('articles')
-        .upsert(allArticles, { onConflict: 'source_url' })
+        .upsert(uniqueArticles, { onConflict: 'source_url' })
 
       if (error) {
         console.error('Error upserting articles:', error)
         throw error
       }
 
-      console.log(`Successfully upserted ${allArticles.length} articles`)
+      console.log(`Successfully upserted ${uniqueArticles.length} articles`)
       
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: `Successfully fetched and saved ${allArticles.length} articles`,
-          articles_count: allArticles.length
+          message: `Successfully fetched and saved ${uniqueArticles.length} articles`,
+          articles_count: uniqueArticles.length
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
