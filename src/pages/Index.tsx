@@ -51,7 +51,7 @@ const Index = () => {
       
       return data as Article[];
     },
-    refetchInterval: 60000, // Refresh every 1 minute
+    refetchInterval: 1000, // Refresh every 1 second
   });
 
   const handleRefresh = () => {
