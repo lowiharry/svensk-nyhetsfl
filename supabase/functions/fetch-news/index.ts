@@ -17,71 +17,83 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // World News API configuration
-    const WORLD_NEWS_API_KEY = '8d0886c7630047fea8bba6e51df9d21e'
-    const WORLD_NEWS_API_URL = 'https://api.worldnewsapi.com/search-news'
-
-    console.log('Starting news fetch...')
-
-    // Fetch latest news from multiple categories
-    const searchQueries = [
-      { text: 'breaking news', language: 'en', number: 25 },
-      { text: 'politics', language: 'en', number: 15 },
-      { text: 'technology', language: 'en', number: 15 },
-      { text: 'business', language: 'en', number: 15 },
-      { text: 'health', language: 'en', number: 10 },
-      { text: 'sports', language: 'en', number: 10 },
-      { text: 'science', language: 'en', number: 10 }
+    // Swedish news sources RSS feeds
+    const swedishNewsSources = [
+      { name: 'SVT Nyheter', url: 'https://www.svt.se/nyheter/rss.xml', category: 'general' },
+      { name: 'Dagens Nyheter', url: 'https://www.dn.se/rss/', category: 'general' },
+      { name: 'Aftonbladet', url: 'https://rss.aftonbladet.se/rss2/small/pages/sections/senastenytt/', category: 'general' },
+      { name: 'Expressen', url: 'https://feeds.expressen.se/nyheter/', category: 'general' },
+      { name: 'Svenska Dagbladet', url: 'https://www.svd.se/feed/articles.rss', category: 'general' },
+      { name: 'SVT Sport', url: 'https://www.svt.se/sport/rss.xml', category: 'sports' },
+      { name: 'DN Ekonomi', url: 'https://www.dn.se/ekonomi/rss/', category: 'business' }
     ]
+
+    console.log('Starting Swedish news fetch...')
 
     const allArticles = []
 
-    for (const query of searchQueries) {
+    // Function to parse RSS feed
+    const parseRSSFeed = async (rssUrl: string, sourceName: string, category: string) => {
       try {
-        const params = new URLSearchParams({
-          text: query.text,
-          language: query.language,
-          number: query.number.toString(),
-          'sort-by': 'publish-time',
-          'sort-direction': 'DESC'
-        })
-
-        const response = await fetch(`${WORLD_NEWS_API_URL}?${params}`, {
+        const response = await fetch(rssUrl, {
           headers: {
-            'x-api-key': WORLD_NEWS_API_KEY,
-            'Content-Type': 'application/json'
+            'User-Agent': 'NewsAggregator/1.0'
           }
         })
 
         if (!response.ok) {
-          console.error(`World News API error for "${query.text}":`, response.status, response.statusText)
-          continue
+          console.error(`RSS fetch error for ${sourceName}:`, response.status, response.statusText)
+          return []
         }
 
-        const data = await response.json()
-        console.log(`Found ${data.news?.length || 0} articles for "${query.text}"`)
+        const xmlText = await response.text()
+        
+        // Simple XML parsing for RSS items
+        const itemMatches = xmlText.match(/<item[^>]*>[\s\S]*?<\/item>/gi) || []
+        
+        const articles = itemMatches.slice(0, 10).map((itemXml: string) => {
+          const titleMatch = itemXml.match(/<title[^>]*><!\[CDATA\[(.*?)\]\]><\/title>|<title[^>]*>(.*?)<\/title>/i)
+          const linkMatch = itemXml.match(/<link[^>]*>(.*?)<\/link>/i)
+          const pubDateMatch = itemXml.match(/<pubDate[^>]*>(.*?)<\/pubDate>/i)
+          const descriptionMatch = itemXml.match(/<description[^>]*><!\[CDATA\[(.*?)\]\]><\/description>|<description[^>]*>(.*?)<\/description>/i)
+          const enclosureMatch = itemXml.match(/<enclosure[^>]*url="([^"]*)"[^>]*>/i)
 
-        if (data.news && data.news.length > 0) {
-          const processedArticles = data.news.map((article: any) => ({
-            title: article.title,
-            source_url: article.url,
-            published_at: new Date(article.publish_date),
-            source_name: 'World News API',
-            image_url: article.image || null,
-            summary: article.summary || article.text?.substring(0, 300) + '...' || null,
-            content: article.text || article.summary || null,
-            category: article.category || 'general',
-          }))
+          const title = (titleMatch?.[1] || titleMatch?.[2] || '').trim()
+          const url = linkMatch?.[1]?.trim() || ''
+          const pubDate = pubDateMatch?.[1]?.trim() || ''
+          const description = (descriptionMatch?.[1] || descriptionMatch?.[2] || '').trim().replace(/<[^>]*>/g, '')
+          const imageUrl = enclosureMatch?.[1] || null
 
-          allArticles.push(...processedArticles)
-        }
+          if (!title || !url) return null
 
-        // Add a small delay between requests to respect rate limits
-        await new Promise(resolve => setTimeout(resolve, 100))
+          return {
+            title: title,
+            source_url: url,
+            published_at: pubDate ? new Date(pubDate) : new Date(),
+            source_name: sourceName,
+            image_url: imageUrl,
+            summary: description.substring(0, 300) + (description.length > 300 ? '...' : ''),
+            content: description,
+            category: category,
+          }
+        }).filter(Boolean)
+
+        console.log(`Found ${articles.length} articles from ${sourceName}`)
+        return articles
 
       } catch (error) {
-        console.error(`Error fetching from World News API for "${query.text}":`, error)
+        console.error(`Error parsing RSS from ${sourceName}:`, error)
+        return []
       }
+    }
+
+    // Fetch from all Swedish news sources
+    for (const source of swedishNewsSources) {
+      const articles = await parseRSSFeed(source.url, source.name, source.category)
+      allArticles.push(...articles)
+      
+      // Add a small delay between requests
+      await new Promise(resolve => setTimeout(resolve, 200))
     }
 
     console.log(`Total articles fetched: ${allArticles.length}`)
