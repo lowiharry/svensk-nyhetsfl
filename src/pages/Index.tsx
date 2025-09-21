@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
+import { FetchNewsButton } from '@/components/FetchNewsButton';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -93,20 +94,23 @@ const Index = () => {
             </span>
           </div>
           
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isLoading}
-            className="flex items-center gap-2"
-          >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <RefreshCw className="w-4 h-4" />
-            )}
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <FetchNewsButton />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className="flex items-center gap-2"
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <RefreshCw className="w-4 h-4" />
+              )}
+              Refresh
+            </Button>
+          </div>
         </div>
 
         {/* Search/Filter Results */}
