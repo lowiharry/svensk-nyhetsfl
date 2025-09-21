@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Supabase
-news-fetcher/.env
+supabase/.temp
