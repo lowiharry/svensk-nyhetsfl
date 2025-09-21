@@ -8,7 +8,7 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('Supabase URL or service key not found. Make sure you have a .env file in the news-fetcher directory with VITE_SUPABASE_URL and SUPABASE_SERVICE_KEY');
+  console.error('Supabase URL or service key not found. Make sure you have a .env file in the root directory with VITE_SUPABASE_URL and SUPABASE_SERVICE_KEY');
   process.exit(1);
 }
 
@@ -20,15 +20,14 @@ const WORLD_NEWS_API_URL = 'https://api.worldnewsapi.com/search-news';
 
 const fetchFromWorldNewsAPI = async () => {
   try {
-    // Fetch latest news from multiple languages and sources
+    // Fetch latest news from Swedish news outlets
     const searchQueries = [
-      { text: 'breaking news', language: 'en', number: 25 },
-      { text: 'politics', language: 'en', number: 15 },
-      { text: 'technology', language: 'en', number: 15 },
-      { text: 'business', language: 'en', number: 15 },
-      { text: 'health', language: 'en', number: 10 },
-      { text: 'sports', language: 'en', number: 10 },
-      { text: 'science', language: 'en', number: 10 }
+      { 'source-ids': 'aftonbladet.se', number: 15 },
+      { 'source-ids': 'expressen.se', number: 15 },
+      { 'source-ids': 'dn.se', number: 15 },
+      { 'source-ids': 'svd.se', number: 15 },
+      { 'source-ids': 'gp.se', number: 10 },
+      { 'source-ids': 'svt.se', number: 10 }
     ];
 
     const allArticles = [];
@@ -36,11 +35,12 @@ const fetchFromWorldNewsAPI = async () => {
     for (const query of searchQueries) {
       try {
         const params = new URLSearchParams({
-          text: query.text,
-          language: query.language,
+          'source-countries': 'se',
+          language: 'sv',
           number: query.number.toString(),
           'sort-by': 'publish-time',
-          'sort-direction': 'DESC'
+          'sort-direction': 'DESC',
+          ...query
         });
 
         const response = await fetch(`${WORLD_NEWS_API_URL}?${params}`, {
@@ -92,14 +92,17 @@ const fetchFromWorldNewsAPI = async () => {
 const fetchAndSaveArticles = async () => {
   console.log('Fetching latest news from World News API...');
 
-  const allArticles = await fetchFromWorldNewsAPI();
+  let allArticles = await fetchFromWorldNewsAPI();
 
   if (allArticles.length > 0) {
-    console.log(`Upserting ${allArticles.length} articles to Supabase...`);
+    // Deduplicate articles by source_url
+    const uniqueArticles = Array.from(new Map(allArticles.map(article => [article.source_url, article])).values());
+
+    console.log(`Upserting ${uniqueArticles.length} unique articles to Supabase...`);
 
     const { data, error } = await supabase
       .from('articles')
-      .upsert(allArticles, { onConflict: 'source_url' });
+      .upsert(uniqueArticles, { onConflict: 'source_url' });
 
     if (error) {
       console.error('Error upserting articles:', error);
@@ -111,6 +114,6 @@ const fetchAndSaveArticles = async () => {
   }
 };
 
-// Fetch articles immediately on start, then every 5 minutes
+// Fetch articles immediately on start, then every 1 minute
 fetchAndSaveArticles();
-setInterval(fetchAndSaveArticles, 300000); // 5 minutes to respect API rate limits
+setInterval(fetchAndSaveArticles, 60000); // 1 minute
