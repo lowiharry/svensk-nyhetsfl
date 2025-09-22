@@ -1,43 +1,12 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Loader2 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { useFetchNews } from '@/hooks/use-fetch-news';
 
 export const FetchNewsButton = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const { fetchNews, isLoading } = useFetchNews();
 
-  const handleFetchNews = async () => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('fetch-news');
-      
-      if (error) {
-        console.error('Error fetching news:', error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch new articles. Please try again.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      toast({
-        title: "Success!",
-        description: data.message || "Successfully fetched new articles!"
-      });
-      
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch new articles. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleFetchNews = () => {
+    fetchNews(true); // Show toast for manual fetch
   };
 
   return (

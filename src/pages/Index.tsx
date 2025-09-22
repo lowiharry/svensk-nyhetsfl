@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
@@ -6,6 +6,7 @@ import { NewsCard } from '@/components/NewsCard';
 import { FetchNewsButton } from '@/components/FetchNewsButton';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import { useFetchNews } from '@/hooks/use-fetch-news';
 
 interface Article {
   id: string;
@@ -21,6 +22,16 @@ interface Article {
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const { fetchNews } = useFetchNews();
+
+  // Auto-fetch news every 60 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchNews(false); // Don't show toast for automatic fetch
+    }, 60000); // 60 seconds
+
+    return () => clearInterval(interval);
+  }, [fetchNews]);
 
   // Fetch articles
   const { data: articles = [], isLoading } = useQuery({
