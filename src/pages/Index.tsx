@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
-import { FetchNewsButton } from '@/components/FetchNewsButton';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Loader2 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { Loader2 } from 'lucide-react';
 
 interface Article {
   id: string;
@@ -20,14 +18,12 @@ interface Article {
 }
 
 const Index = () => {
-  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [refreshKey, setRefreshKey] = useState(0);
 
   // Fetch articles
-  const { data: articles = [], isLoading, refetch } = useQuery({
-    queryKey: ['articles', searchQuery, selectedCategory, refreshKey],
+  const { data: articles = [], isLoading } = useQuery({
+    queryKey: ['articles', searchQuery, selectedCategory],
     queryFn: async () => {
       let query = supabase
         .from('articles')
@@ -55,22 +51,9 @@ const Index = () => {
     refetchInterval: 1000, // Refresh every 1 second
   });
 
-  const handleRefresh = () => {
-    setRefreshKey(prev => prev + 1);
-    refetch();
-    toast({
-      title: "Refreshed",
-      description: "News feed updated successfully"
-    });
-  };
-
   const handleOpenComments = (articleId: string) => {
     // TODO: Implement comments modal/drawer
     console.log('Open comments for article:', articleId);
-    toast({
-      title: "Comments",
-      description: "Comments feature coming soon!"
-    });
   };
 
   return (
@@ -94,23 +77,6 @@ const Index = () => {
             </span>
           </div>
           
-          <div className="flex items-center gap-2">
-            <FetchNewsButton />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={isLoading}
-              className="flex items-center gap-2"
-            >
-              {isLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <RefreshCw className="w-4 h-4" />
-              )}
-              Refresh
-            </Button>
-          </div>
         </div>
 
         {/* Search/Filter Results */}
