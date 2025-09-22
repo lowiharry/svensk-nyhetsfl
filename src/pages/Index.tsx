@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
 import { FetchNewsButton } from '@/components/FetchNewsButton';
+import { BackToTop } from '@/components/BackToTop';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useFetchNews } from '@/hooks/use-fetch-news';
@@ -181,6 +182,8 @@ const Index = () => {
           <p>Your trusted source for Swedish news aggregation</p>
         </footer>
       </main>
+      
+      <BackToTop />
     </div>
   );
 };
