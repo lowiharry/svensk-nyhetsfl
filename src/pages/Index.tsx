@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
+import { FetchNewsButton } from '@/components/FetchNewsButton';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
@@ -77,6 +78,9 @@ const Index = () => {
             </span>
           </div>
           
+          <div className="flex items-center gap-2">
+            <FetchNewsButton />
+          </div>
         </div>
 
         {/* Search/Filter Results */}
