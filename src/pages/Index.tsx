@@ -18,6 +18,8 @@ interface Article {
   source_url: string;
   published_at: string;
   category: string;
+  likes_count: number;
+  dislikes_count: number;
 }
 
 const Index = () => {
