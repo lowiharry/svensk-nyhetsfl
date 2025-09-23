@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Share2, ExternalLink, Clock, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Share2, ExternalLink, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
-import { stripHtml, formatNumber } from '@/lib/utils';
-import { supabase } from '@/integrations/supabase/client';
+import { stripHtml } from '@/lib/utils';
 
 interface Article {
   id: string;
@@ -17,8 +15,6 @@ interface Article {
   source_url: string;
   published_at: string;
   category: string;
-  likes_count: number;
-  dislikes_count: number;
 }
 
 interface NewsCardProps {
@@ -27,94 +23,6 @@ interface NewsCardProps {
 
 export const NewsCard = ({ article }: NewsCardProps) => {
   const { toast } = useToast();
-  const [userReaction, setUserReaction] = useState<'like' | 'dislike' | null>(null);
-  const [optimisticCounts, setOptimisticCounts] = useState({
-    likes: article.likes_count || 0,
-    dislikes: article.dislikes_count || 0
-  });
-
-  // Generate or get session ID
-  const getSessionId = () => {
-    let sessionId = localStorage.getItem('session_id');
-    if (!sessionId) {
-      sessionId = crypto.randomUUID();
-      localStorage.setItem('session_id', sessionId);
-    }
-    return sessionId;
-  };
-
-  // Check user's current reaction on mount
-  useEffect(() => {
-    const checkUserReaction = async () => {
-      const sessionId = getSessionId();
-      const { data } = await supabase
-        .from('article_interactions')
-        .select('interaction_type')
-        .eq('article_id', article.id)
-        .eq('session_id', sessionId)
-        .maybeSingle();
-      
-      if (data) {
-        setUserReaction(data.interaction_type as 'like' | 'dislike');
-      }
-    };
-
-    checkUserReaction();
-  }, [article.id]);
-
-  // Update optimistic counts when article data changes
-  useEffect(() => {
-    setOptimisticCounts({
-      likes: article.likes_count || 0,
-      dislikes: article.dislikes_count || 0
-    });
-  }, [article.likes_count, article.dislikes_count]);
-
-  const handleReaction = async (reactionType: 'like' | 'dislike') => {
-    const sessionId = getSessionId();
-    
-    // --- Optimistic Update ---
-    const originalReaction = userReaction;
-    const originalCounts = { ...optimisticCounts };
-
-    const newReaction = originalReaction === reactionType ? null : reactionType;
-    
-    let newLikes = originalCounts.likes;
-    let newDislikes = originalCounts.dislikes;
-
-    // Decrement the old reaction count
-    if (originalReaction === 'like') newLikes--;
-    if (originalReaction === 'dislike') newDislikes--;
-
-    // Increment the new reaction count
-    if (newReaction === 'like') newLikes++;
-    if (newReaction === 'dislike') newDislikes++;
-
-    // Update UI immediately
-    setUserReaction(newReaction);
-    setOptimisticCounts({ likes: newLikes, dislikes: newDislikes });
-    // --- End of Optimistic Update ---
-
-    // --- RPC Call ---
-    const { error } = await supabase.rpc('handle_article_reaction', {
-      p_article_id: article.id,
-      p_session_id: sessionId,
-      p_reaction_type: reactionType,
-    });
-
-    // If there's an error, revert the optimistic update
-    if (error) {
-      setUserReaction(originalReaction);
-      setOptimisticCounts(originalCounts);
-      
-      console.error('Error updating reaction:', error);
-      toast({
-        title: "Error",
-        description: "Failed to record reaction. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -201,52 +109,26 @@ export const NewsCard = ({ article }: NewsCardProps) => {
           </p>
         )}
         
-        <div className="flex items-center justify-between gap-2 mt-auto">
-          {/* Reaction buttons */}
-          <div className="flex items-center gap-1">
-            <Button
-              variant={userReaction === 'like' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => handleReaction('like')}
-              className="h-8 px-2 text-xs"
-            >
-              <ThumbsUp className={`w-3 h-3 mr-1 ${userReaction === 'like' ? 'fill-current' : ''}`} />
-              {optimisticCounts.likes > 0 && formatNumber(optimisticCounts.likes)}
-            </Button>
-            
-            <Button
-              variant={userReaction === 'dislike' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => handleReaction('dislike')}
-              className="h-8 px-2 text-xs"
-            >
-              <ThumbsDown className={`w-3 h-3 mr-1 ${userReaction === 'dislike' ? 'fill-current' : ''}`} />
-              {optimisticCounts.dislikes > 0 && formatNumber(optimisticCounts.dislikes)}
-            </Button>
-          </div>
+        <div className="flex items-center justify-end gap-2 mt-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleShare}
+            className="h-9 px-3"
+          >
+            <Share2 className="w-3 h-3 sm:mr-1" />
+            <span className="hidden sm:inline text-xs">Share</span>
+          </Button>
           
-          {/* Action buttons */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleShare}
-              className="h-9 px-3"
-            >
-              <Share2 className="w-3 h-3 sm:mr-1" />
-              <span className="hidden sm:inline text-xs">Share</span>
-            </Button>
-            
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => window.open(article.source_url, '_blank')}
-              className="flex items-center gap-1 h-9 px-3"
-            >
-              <ExternalLink className="w-3 h-3" />
-              <span className="text-xs">Read More</span>
-            </Button>
-          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => window.open(article.source_url, '_blank')}
+            className="flex items-center gap-1 h-9 px-3"
+          >
+            <ExternalLink className="w-3 h-3" />
+            <span className="text-xs">Read More</span>
+          </Button>
         </div>
       </CardContent>
     </Card>
