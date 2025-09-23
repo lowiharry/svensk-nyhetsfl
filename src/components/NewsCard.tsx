@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Share2, ExternalLink, Clock, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
-import { stripHtml } from '@/lib/utils';
+import { stripHtml, formatNumber } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Article {
@@ -73,59 +73,45 @@ export const NewsCard = ({ article }: NewsCardProps) => {
   const handleReaction = async (reactionType: 'like' | 'dislike') => {
     const sessionId = getSessionId();
     
-    // Optimistic update
-    const wasCurrentReaction = userReaction === reactionType;
-    const newReaction = wasCurrentReaction ? null : reactionType;
+    // --- Optimistic Update ---
+    const originalReaction = userReaction;
+    const originalCounts = { ...optimisticCounts };
+
+    const newReaction = originalReaction === reactionType ? null : reactionType;
     
-    // Calculate optimistic counts
-    let newLikes = optimisticCounts.likes;
-    let newDislikes = optimisticCounts.dislikes;
-    
-    // Remove old reaction count
-    if (userReaction === 'like') newLikes--;
-    if (userReaction === 'dislike') newDislikes--;
-    
-    // Add new reaction count
+    let newLikes = originalCounts.likes;
+    let newDislikes = originalCounts.dislikes;
+
+    // Decrement the old reaction count
+    if (originalReaction === 'like') newLikes--;
+    if (originalReaction === 'dislike') newDislikes--;
+
+    // Increment the new reaction count
     if (newReaction === 'like') newLikes++;
     if (newReaction === 'dislike') newDislikes++;
-    
+
     // Update UI immediately
     setUserReaction(newReaction);
     setOptimisticCounts({ likes: newLikes, dislikes: newDislikes });
+    // --- End of Optimistic Update ---
 
-    try {
-      // Remove existing reaction first
-      if (userReaction) {
-        await supabase
-          .from('article_interactions')
-          .delete()
-          .eq('article_id', article.id)
-          .eq('session_id', sessionId);
-      }
-      
-      // Add new reaction if not removing
-      if (newReaction) {
-        await supabase
-          .from('article_interactions')
-          .insert({
-            article_id: article.id,
-            session_id: sessionId,
-            interaction_type: newReaction
-          });
-      }
-    } catch (error) {
-      // Revert optimistic update on error
-      setUserReaction(userReaction);
-      setOptimisticCounts({
-        likes: article.likes_count || 0,
-        dislikes: article.dislikes_count || 0
-      });
+    // --- RPC Call ---
+    const { error } = await supabase.rpc('handle_article_reaction', {
+      p_article_id: article.id,
+      p_session_id: sessionId,
+      p_reaction_type: reactionType,
+    });
+
+    // If there's an error, revert the optimistic update
+    if (error) {
+      setUserReaction(originalReaction);
+      setOptimisticCounts(originalCounts);
       
       console.error('Error updating reaction:', error);
       toast({
         title: "Error",
-        description: "Failed to update reaction",
-        variant: "destructive"
+        description: "Failed to record reaction. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -225,7 +211,7 @@ export const NewsCard = ({ article }: NewsCardProps) => {
               className="h-8 px-2 text-xs"
             >
               <ThumbsUp className={`w-3 h-3 mr-1 ${userReaction === 'like' ? 'fill-current' : ''}`} />
-              {optimisticCounts.likes > 0 && optimisticCounts.likes}
+              {optimisticCounts.likes > 0 && formatNumber(optimisticCounts.likes)}
             </Button>
             
             <Button
@@ -235,7 +221,7 @@ export const NewsCard = ({ article }: NewsCardProps) => {
               className="h-8 px-2 text-xs"
             >
               <ThumbsDown className={`w-3 h-3 mr-1 ${userReaction === 'dislike' ? 'fill-current' : ''}`} />
-              {optimisticCounts.dislikes > 0 && optimisticCounts.dislikes}
+              {optimisticCounts.dislikes > 0 && formatNumber(optimisticCounts.dislikes)}
             </Button>
           </div>
           
