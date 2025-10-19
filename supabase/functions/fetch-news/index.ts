@@ -101,7 +101,7 @@ serve(async (req) => {
     if (allArticles.length > 0) {
       // Remove duplicates by source_url to prevent database conflicts
       const uniqueArticles = allArticles.filter((article, index, self) => 
-        index === self.findIndex(a => a.source_url === article.source_url)
+        article && index === self.findIndex(a => a && a.source_url === article.source_url)
       )
       
       console.log(`Unique articles after deduplication: ${uniqueArticles.length}`)
@@ -147,7 +147,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
