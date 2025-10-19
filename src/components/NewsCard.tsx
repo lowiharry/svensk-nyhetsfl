@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +28,7 @@ interface NewsCardProps {
 
 export const NewsCard = ({ article }: NewsCardProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [userReaction, setUserReaction] = useState<'like' | 'dislike' | null>(null);
   const [optimisticCounts, setOptimisticCounts] = useState({
     likes: article.likes_count || 0,
@@ -70,7 +72,16 @@ export const NewsCard = ({ article }: NewsCardProps) => {
     });
   }, [article.likes_count, article.dislikes_count]);
 
-  const handleReaction = async (reactionType: 'like' | 'dislike') => {
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Stop navigation if a button or link inside the card was clicked
+    if ((e.target as HTMLElement).closest('button, a')) {
+      return;
+    }
+    navigate(`/article/${article.id}`);
+  };
+
+  const handleReaction = async (e: React.MouseEvent, reactionType: 'like' | 'dislike') => {
+    e.stopPropagation(); // Prevent card click from firing
     const sessionId = getSessionId();
     
     // --- Optimistic Update ---
@@ -116,7 +127,8 @@ export const NewsCard = ({ article }: NewsCardProps) => {
     }
   };
 
-  const handleShare = async () => {
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (navigator.share) {
       try {
         await navigator.share({
@@ -158,97 +170,102 @@ export const NewsCard = ({ article }: NewsCardProps) => {
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-      <CardHeader className="pb-3 flex-shrink-0">
-        <div className="flex justify-between items-start gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <Badge className={`${getSourceColor(article.source_name)} text-white text-xs px-2 py-1`}>
-                {article.source_name}
-              </Badge>
-              <Badge variant="outline" className="capitalize text-xs px-2 py-1">
-                {article.category}
-              </Badge>
+    <div onClick={handleCardClick} className="cursor-pointer h-full">
+      <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+        <CardHeader className="pb-3 flex-shrink-0">
+          <div className="flex justify-between items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                <Badge className={`${getSourceColor(article.source_name)} text-white text-xs px-2 py-1`}>
+                  {article.source_name}
+                </Badge>
+                <Badge variant="outline" className="capitalize text-xs px-2 py-1">
+                  {article.category}
+                </Badge>
+              </div>
+              <h3 className="font-bold text-base sm:text-lg leading-tight mb-2 line-clamp-2">
+                {stripHtml(article.title)}
+              </h3>
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                <span className="truncate">
+                  {formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}
+                </span>
+              </div>
             </div>
-            <h3 className="font-bold text-base sm:text-lg leading-tight mb-2 line-clamp-2">
-              {stripHtml(article.title)}
-            </h3>
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="truncate">
-                {formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}
-              </span>
-            </div>
+            {article.image_url && (
+              <img
+                src={article.image_url}
+                alt={article.title}
+                className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            )}
           </div>
-          {article.image_url && (
-            <img 
-              src={article.image_url} 
-              alt={article.title}
-              className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
-              loading="lazy"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          )}
-        </div>
-      </CardHeader>
-      
-      <CardContent className="pt-0 flex-1 flex flex-col">
-        {article.summary && (
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">
-            {stripHtml(article.summary)}
-          </p>
-        )}
+        </CardHeader>
         
-        <div className="flex items-center justify-between gap-2 mt-auto">
-          {/* Reaction buttons */}
-          <div className="flex items-center gap-1">
-            <Button
-              variant={userReaction === 'like' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => handleReaction('like')}
-              className="h-8 px-2 text-xs"
-            >
-              <ThumbsUp className={`w-3 h-3 mr-1 ${userReaction === 'like' ? 'fill-current' : ''}`} />
-              {optimisticCounts.likes > 0 && formatNumber(optimisticCounts.likes)}
-            </Button>
-            
-            <Button
-              variant={userReaction === 'dislike' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => handleReaction('dislike')}
-              className="h-8 px-2 text-xs"
-            >
-              <ThumbsDown className={`w-3 h-3 mr-1 ${userReaction === 'dislike' ? 'fill-current' : ''}`} />
-              {optimisticCounts.dislikes > 0 && formatNumber(optimisticCounts.dislikes)}
-            </Button>
-          </div>
+        <CardContent className="pt-0 flex-1 flex flex-col">
+          {article.summary && (
+            <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">
+              {stripHtml(article.summary)}
+            </p>
+          )}
           
-          {/* Action buttons */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleShare}
-              className="h-9 px-3"
-            >
-              <Share2 className="w-3 h-3 sm:mr-1" />
-              <span className="hidden sm:inline text-xs">Share</span>
-            </Button>
+          <div className="flex items-center justify-between gap-2 mt-auto">
+            {/* Reaction buttons */}
+            <div className="flex items-center gap-1">
+              <Button
+                variant={userReaction === 'like' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={(e) => handleReaction(e, 'like')}
+                className="h-8 px-2 text-xs"
+              >
+                <ThumbsUp className={`w-3 h-3 mr-1 ${userReaction === 'like' ? 'fill-current' : ''}`} />
+                {optimisticCounts.likes > 0 && formatNumber(optimisticCounts.likes)}
+              </Button>
+
+              <Button
+                variant={userReaction === 'dislike' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={(e) => handleReaction(e, 'dislike')}
+                className="h-8 px-2 text-xs"
+              >
+                <ThumbsDown className={`w-3 h-3 mr-1 ${userReaction === 'dislike' ? 'fill-current' : ''}`} />
+                {optimisticCounts.dislikes > 0 && formatNumber(optimisticCounts.dislikes)}
+              </Button>
+            </div>
             
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => window.open(article.source_url, '_blank')}
-              className="flex items-center gap-1 h-9 px-3"
-            >
-              <ExternalLink className="w-3 h-3" />
-              <span className="text-xs">Read More</span>
-            </Button>
+            {/* Action buttons */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleShare}
+                className="h-9 px-3"
+              >
+                <Share2 className="w-3 h-3 sm:mr-1" />
+                <span className="hidden sm:inline text-xs">Share</span>
+              </Button>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(article.source_url, '_blank');
+                }}
+                className="flex items-center gap-1 h-9 px-3"
+              >
+                <ExternalLink className="w-3 h-3" />
+                <span className="text-xs">Read More</span>
+              </Button>
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
