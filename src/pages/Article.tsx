@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
@@ -43,8 +44,16 @@ const ArticlePage = () => {
     return colors[source as keyof typeof colors] || 'bg-primary';
   };
 
+  const pageTitle = article ? `${stripHtml(article.title)} | Sweden Update` : 'Sweden Update';
+  const pageDescription = article ? stripHtml(article.summary) : "Loading article from Sweden Update.";
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+      </Helmet>
+
       {/* A simplified header that doesn't need all the filter/search props */}
       <Header onSearch={() => {}} onCategoryFilter={() => {}} selectedCategory="" />
 
