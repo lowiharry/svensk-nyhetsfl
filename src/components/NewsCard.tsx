@@ -5,6 +5,7 @@ import { Share2, ExternalLink, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface Article {
   id: string;
@@ -24,13 +25,17 @@ interface NewsCardProps {
 export const NewsCard = ({ article }: NewsCardProps) => {
   const { toast } = useToast();
 
+  const articleUrl = `/article/${encodeURIComponent(article.source_url)}`;
+
   const handleShare = async () => {
+    const shareUrl = `${window.location.origin}${articleUrl}`;
+    
     if (navigator.share) {
       try {
         await navigator.share({
           title: article.title,
           text: article.summary || '',
-          url: article.source_url,
+          url: shareUrl,
         });
       } catch (error) {
         // User cancelled sharing
@@ -38,7 +43,7 @@ export const NewsCard = ({ article }: NewsCardProps) => {
     } else {
       // Fallback to clipboard
       try {
-        await navigator.clipboard.writeText(article.source_url);
+        await navigator.clipboard.writeText(shareUrl);
         toast({
           title: "Copied!",
           description: "Article link copied to clipboard"
@@ -120,14 +125,23 @@ export const NewsCard = ({ article }: NewsCardProps) => {
             <span className="hidden sm:inline text-xs">Share</span>
           </Button>
           
+          <Link to={articleUrl}>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="flex items-center gap-1 h-9 px-3"
+            >
+              <span className="text-xs">View Article</span>
+            </Button>
+          </Link>
+          
           <Button
-            variant="secondary"
+            variant="ghost"
             size="sm"
             onClick={() => window.open(article.source_url, '_blank')}
             className="flex items-center gap-1 h-9 px-3"
           >
             <ExternalLink className="w-3 h-3" />
-            <span className="text-xs">Read More</span>
           </Button>
         </div>
       </CardContent>
