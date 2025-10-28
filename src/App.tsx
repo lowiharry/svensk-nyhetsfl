@@ -7,6 +7,8 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import ArticleDetail from "./pages/ArticleDetail";
 import NotFound from "./pages/NotFound";
+import Sitemap from "./pages/Sitemap";
+import NewsSitemap from "./pages/NewsSitemap";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +21,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/sitemap.xml" element={<Sitemap />} />
+            <Route path="/news-sitemap.xml" element={<NewsSitemap />} />
             <Route path="/article/:sourceUrl" element={<ArticleDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
