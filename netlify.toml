@@ -1,0 +1,11 @@
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/sitemap"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/news-sitemap.xml"
+  to = "https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/sitemap/news-sitemap.xml"
+  status = 200
+  force = true
