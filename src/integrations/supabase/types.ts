@@ -53,6 +53,7 @@ export type Database = {
           content: string | null
           created_at: string
           dislikes_count: number | null
+          expiry_at: string | null
           id: string
           image_url: string | null
           likes_count: number | null
@@ -69,6 +70,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           dislikes_count?: number | null
+          expiry_at?: string | null
           id?: string
           image_url?: string | null
           likes_count?: number | null
@@ -85,6 +87,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           dislikes_count?: number | null
+          expiry_at?: string | null
           id?: string
           image_url?: string | null
           likes_count?: number | null
