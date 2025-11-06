@@ -23,7 +23,11 @@ interface Article {
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [page, setPage] = useState(1);
+  const [allArticles, setAllArticles] = useState<Article[]>([]);
   const { fetchNews } = useFetchNews();
+
+  const ARTICLES_PER_PAGE = 20;
 
   // Auto-fetch news every 60 seconds
   useEffect(() => {
@@ -34,18 +38,25 @@ const Index = () => {
     return () => clearInterval(interval);
   }, [fetchNews]);
 
+  // Reset page when search or category changes
+  useEffect(() => {
+    setPage(1);
+    setAllArticles([]);
+  }, [searchQuery, selectedCategory]);
+
   // Fetch articles - only non-expired ones
-  const { data: articles = [], isLoading } = useQuery({
-    queryKey: ['articles', searchQuery, selectedCategory],
+  const { data: articles = [], isLoading, isFetching } = useQuery({
+    queryKey: ['articles', searchQuery, selectedCategory, page],
     queryFn: async () => {
       const now = new Date().toISOString();
+      const offset = (page - 1) * ARTICLES_PER_PAGE;
       
       let query = supabase
         .from('articles')
         .select('*')
         .gt('expiry_at', now)
         .order('published_at', { ascending: false })
-        .limit(50);
+        .range(offset, offset + ARTICLES_PER_PAGE - 1);
 
       if (selectedCategory !== 'all') {
         query = query.eq('category', selectedCategory);
@@ -64,8 +75,25 @@ const Index = () => {
       
       return data as Article[];
     },
-    refetchInterval: 1000, // Refresh every 1 second
+    refetchInterval: page === 1 ? 1000 : false, // Only auto-refresh first page
   });
+
+  // Update all articles when new data arrives
+  useEffect(() => {
+    if (articles.length > 0) {
+      if (page === 1) {
+        setAllArticles(articles);
+      } else {
+        setAllArticles(prev => [...prev, ...articles]);
+      }
+    }
+  }, [articles, page]);
+
+  const hasMoreArticles = articles.length === ARTICLES_PER_PAGE;
+
+  const handleLoadMore = () => {
+    setPage(prev => prev + 1);
+  };
 
   const handleOpenComments = (articleId: string) => {
     // TODO: Implement comments modal/drawer
@@ -89,7 +117,7 @@ const Index = () => {
               <span className="text-sm font-medium">Live Updates</span>
             </div>
             <span className="text-sm text-muted-foreground">
-              {articles.length} articles loaded
+              {allArticles.length} articles loaded
             </span>
           </div>
           
@@ -129,7 +157,7 @@ const Index = () => {
         )}
 
         {/* Loading State */}
-        {isLoading && articles.length === 0 && (
+        {isLoading && allArticles.length === 0 && (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
@@ -139,7 +167,7 @@ const Index = () => {
         )}
 
         {/* No Results */}
-        {!isLoading && articles.length === 0 && (
+        {!isLoading && allArticles.length === 0 && (
           <div className="text-center py-12">
             <div className="mb-4 text-6xl">📰</div>
             <h3 className="text-xl font-semibold mb-2">No articles found</h3>
@@ -164,15 +192,39 @@ const Index = () => {
         )}
 
         {/* News Grid */}
-        {articles.length > 0 && (
-          <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {articles.map((article) => (
-              <NewsCard
-                key={article.id}
-                article={article}
-              />
-            ))}
-          </div>
+        {allArticles.length > 0 && (
+          <>
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {allArticles.map((article) => (
+                <NewsCard
+                  key={article.id}
+                  article={article}
+                />
+              ))}
+            </div>
+
+            {/* Load More Button */}
+            {hasMoreArticles && (
+              <div className="flex justify-center mt-8">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleLoadMore}
+                  disabled={isFetching}
+                  className="min-w-[200px]"
+                >
+                  {isFetching ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Loading...
+                    </>
+                  ) : (
+                    'Load More Articles'
+                  )}
+                </Button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Footer */}
