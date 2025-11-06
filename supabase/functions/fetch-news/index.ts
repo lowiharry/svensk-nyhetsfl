@@ -66,10 +66,15 @@ serve(async (req) => {
 
           if (!title || !url) return null
 
+          const publishedAt = pubDate ? new Date(pubDate) : new Date()
+          const expiryAt = new Date(publishedAt)
+          expiryAt.setDate(expiryAt.getDate() + 30)
+
           return {
             title: title,
             source_url: url,
-            published_at: pubDate ? new Date(pubDate) : new Date(),
+            published_at: publishedAt.toISOString(),
+            expiry_at: expiryAt.toISOString(),
             source_name: sourceName,
             image_url: imageUrl,
             summary: description.substring(0, 300) + (description.length > 300 ? '...' : ''),
