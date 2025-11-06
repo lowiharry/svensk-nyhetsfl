@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -87,9 +88,14 @@ export default function ArticleDetail() {
   // Handle expired articles with 410 Gone
   if (isExpired) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <Link to="/">
+      <>
+        <Helmet>
+          <title>Article Expired - Sweden Update</title>
+          <meta name="robots" content="noindex" />
+        </Helmet>
+        <div className="min-h-screen bg-background">
+          <div className="container mx-auto px-4 py-8">
+            <Link to="/">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
@@ -107,14 +113,20 @@ export default function ArticleDetail() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
   if (!article) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <Link to="/">
+      <>
+        <Helmet>
+          <title>Article Not Found - Sweden Update</title>
+          <meta name="robots" content="noindex" />
+        </Helmet>
+        <div className="min-h-screen bg-background">
+          <div className="container mx-auto px-4 py-8">
+            <Link to="/">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
@@ -126,14 +138,22 @@ export default function ArticleDetail() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6">
+    <>
+      <Helmet>
+        <title>{`${stripHtml(article.title)} - Sweden Update`}</title>
+        <meta name="description" content={stripHtml(article.summary || '')} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={`${window.location.origin}/article/${encodeURIComponent(article.source_url)}`} />
+      </Helmet>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <Link to="/">
+            <Button variant="ghost" className="mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Button>
@@ -213,5 +233,6 @@ export default function ArticleDetail() {
         </article>
       </div>
     </div>
+    </>
   );
 }
