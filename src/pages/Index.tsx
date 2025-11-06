@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
@@ -35,17 +35,25 @@ const Index = () => {
   }, [fetchNews]);
 
   // Fetch articles - only non-expired ones
-  const { data: articles = [], isLoading } = useQuery({
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
     queryKey: ['articles', searchQuery, selectedCategory],
-    queryFn: async () => {
+    queryFn: async ({ pageParam = 0 }) => {
       const now = new Date().toISOString();
+      const from = pageParam * 50;
+      const to = from + 49;
       
       let query = supabase
         .from('articles')
         .select('*')
         .gt('expiry_at', now)
         .order('published_at', { ascending: false })
-        .limit(50);
+        .range(from, to);
 
       if (selectedCategory !== 'all') {
         query = query.eq('category', selectedCategory);
@@ -64,8 +72,13 @@ const Index = () => {
       
       return data as Article[];
     },
-    refetchInterval: 1000, // Refresh every 1 second
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.length === 50 ? allPages.length : undefined;
+    },
+    initialPageParam: 0,
   });
+
+  const articles = data?.pages.flatMap(page => page) ?? [];
 
   const handleOpenComments = (articleId: string) => {
     // TODO: Implement comments modal/drawer
@@ -172,6 +185,25 @@ const Index = () => {
                 article={article}
               />
             ))}
+          </div>
+        )}
+
+        {/* Load More Button */}
+        {hasNextPage && (
+          <div className="flex justify-center mt-8">
+            <Button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              {isFetchingNextPage ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                'Load More'
+              )}
+            </Button>
           </div>
         )}
 
