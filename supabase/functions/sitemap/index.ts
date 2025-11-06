@@ -27,11 +27,13 @@ serve(async (req) => {
     if (pathname.includes('news-sitemap.xml')) {
       const twoDaysAgo = new Date()
       twoDaysAgo.setHours(twoDaysAgo.getHours() - 48)
+      const now = new Date().toISOString()
       
       const { data: recentArticles, error } = await supabaseClient
         .from('articles')
         .select('title, source_url, published_at, updated_at, category')
         .gte('published_at', twoDaysAgo.toISOString())
+        .gt('expiry_at', now)
         .order('published_at', { ascending: false })
       
       if (error) {
@@ -71,10 +73,12 @@ serve(async (req) => {
       })
     }
 
-    // Handle main sitemap
+    // Handle main sitemap - only include non-expired articles
+    const now = new Date().toISOString()
     const { data: articles, error } = await supabaseClient
       .from('articles')
       .select('source_url, published_at, updated_at, category')
+      .gt('expiry_at', now)
       .order('published_at', { ascending: false })
     
     if (error) {

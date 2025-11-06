@@ -34,13 +34,16 @@ const Index = () => {
     return () => clearInterval(interval);
   }, [fetchNews]);
 
-  // Fetch articles
+  // Fetch articles - only non-expired ones
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ['articles', searchQuery, selectedCategory],
     queryFn: async () => {
+      const now = new Date().toISOString();
+      
       let query = supabase
         .from('articles')
         .select('*')
+        .gt('expiry_at', now)
         .order('published_at', { ascending: false })
         .limit(50);
 

@@ -21,13 +21,16 @@ export default function ArticleDetail() {
         .from('articles')
         .select('*')
         .eq('source_url', decodedUrl)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;
     },
     enabled: !!sourceUrl
   });
+
+  // Check if article is expired
+  const isExpired = article && new Date(article.expiry_at) <= new Date();
 
   const handleShare = async () => {
     if (!article) return;
@@ -77,6 +80,32 @@ export default function ArticleDetail() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Handle expired articles with 410 Gone
+  if (isExpired) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <Link to="/">
+            <Button variant="ghost" className="mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Home
+            </Button>
+          </Link>
+          <div className="text-center py-12">
+            <div className="mb-4 text-6xl">⏰</div>
+            <h1 className="text-2xl font-bold mb-4">Article Expired</h1>
+            <p className="text-muted-foreground mb-2">
+              This article was published more than 30 days ago and has been removed from our archive.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              HTTP 410 Gone - Content intentionally removed
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
