@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
@@ -86,10 +87,16 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header 
-        onSearch={setSearchQuery}
-        onCategoryFilter={setSelectedCategory}
+    <>
+      <Helmet>
+        <title>Sweden Update - Latest Swedish News</title>
+        <meta name="description" content="Your trusted source for the latest news from Sweden, aggregated from top sources." />
+        <link rel="canonical" href="https://swedenupdate.com/" />
+      </Helmet>
+      <div className="min-h-screen bg-background">
+        <Header
+          onSearch={setSearchQuery}
+          onCategoryFilter={setSelectedCategory}
         selectedCategory={selectedCategory}
       />
       
@@ -220,6 +227,7 @@ const Index = () => {
       
       <BackToTop />
     </div>
+    </>
   );
 };
 

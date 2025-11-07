@@ -55,10 +55,19 @@ serve(async (req) => {
       throw deleteError
     }
 
+    // Trigger sitemap regeneration
+    try {
+      const sitemapUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/sitemap`;
+      await fetch(sitemapUrl);
+      console.log('Sitemap regeneration triggered.');
+    } catch (sitemapError) {
+      console.error('Error triggering sitemap regeneration:', sitemapError);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Successfully deleted ${expiredArticles.length} expired articles`,
+        message: `Successfully deleted ${expiredArticles.length} expired articles and triggered sitemap regeneration`,
         deleted_count: expiredArticles.length
       }),
       {
