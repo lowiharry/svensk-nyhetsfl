@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Helmet } from 'react-helmet-async';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
 import { FetchNewsButton } from '@/components/FetchNewsButton';
@@ -102,7 +103,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header 
+      <Helmet>
+        <title>Sweden Update - Latest Swedish News</title>
+        <meta name="description" content="Your trusted source for Swedish news aggregation. Get the latest updates from Aftonbladet, Expressen, DN, SvD, GP, and SVT." />
+        <link rel="canonical" href="https://swedenupdate.com/" />
+      </Helmet>
+      <Header
         onSearch={setSearchQuery}
         onCategoryFilter={setSelectedCategory}
         selectedCategory={selectedCategory}

@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ExternalLink, Clock, Share2 } from 'lucide-react';
@@ -129,8 +130,27 @@ export default function ArticleDetail() {
     );
   }
 
+  const canonicalUrl = `https://swedenupdate.com/article/${encodeURIComponent(sourceUrl)}`;
+  const articleTitle = `${article.title} - Sweden Update`;
+  const articleDescription = article.summary || article.title;
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{articleTitle}</title>
+        <meta name="description" content={articleDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={articleDescription} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={canonicalUrl} />
+        {article.image_url && <meta property="og:image" content={article.image_url} />}
+        <meta property="article:published_time" content={article.published_at} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={articleDescription} />
+        {article.image_url && <meta name="twitter:image" content={article.image_url} />}
+      </Helmet>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Link to="/">
           <Button variant="ghost" className="mb-6">
