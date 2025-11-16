@@ -9,3 +9,6 @@ verify_jwt = false
 [functions.cleanup-expired]
 verify_jwt = false
 schedule = "0 0 * * *"
+
+[functions.enrich-article]
+verify_jwt = false
