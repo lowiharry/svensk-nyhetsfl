@@ -9,6 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -22,7 +23,7 @@ export default function ArticleDetail() {
   const { sourceUrl } = useParams();
   const { toast } = useToast();
   
-  const { data: article, isLoading } = useQuery({
+  const { data: article, isLoading, refetch } = useQuery({
     queryKey: ['article', sourceUrl],
     queryFn: async () => {
       const decodedUrl = decodeURIComponent(sourceUrl || '');
@@ -38,8 +39,44 @@ export default function ArticleDetail() {
     enabled: !!sourceUrl
   });
 
+  const [isEnriching, setIsEnriching] = useState(false);
+
   // Check if article is expired
   const isExpired = article && new Date(article.expiry_at) <= new Date();
+
+  const handleEnrich = async () => {
+    if (!article) return;
+    
+    setIsEnriching(true);
+    try {
+      const { error } = await supabase.functions.invoke('enrich-article', {
+        body: { articleId: article.id }
+      });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to enrich article",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Success!",
+          description: "Article enriched with AI analysis"
+        });
+        refetch();
+      }
+    } catch (error) {
+      console.error('Enrichment error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to enrich article",
+        variant: "destructive"
+      });
+    } finally {
+      setIsEnriching(false);
+    }
+  };
 
   const handleShare = async () => {
     if (!article) return;
@@ -290,6 +327,73 @@ export default function ArticleDetail() {
           {article.content && (
             <div className="prose prose-lg max-w-none">
               {stripHtml(article.content)}
+            </div>
+          )}
+
+          {/* AI Enrichments */}
+          {article.ai_enriched_at ? (
+            <div className="space-y-6 border-t pt-6 mt-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">AI Analysis</h2>
+                <span className="text-sm text-muted-foreground">
+                  Updated {formatDistanceToNow(new Date(article.ai_enriched_at), { addSuffix: true })}
+                </span>
+              </div>
+
+              {article.ai_summary && (
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Summary</h3>
+                  <p className="text-muted-foreground">{article.ai_summary}</p>
+                </div>
+              )}
+
+              {article.ai_context && (
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Context</h3>
+                  <p className="text-muted-foreground">{article.ai_context}</p>
+                </div>
+              )}
+
+              {article.ai_timeline && (
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Timeline</h3>
+                  <div className="text-muted-foreground whitespace-pre-wrap">{article.ai_timeline}</div>
+                </div>
+              )}
+
+              {article.ai_analysis && (
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Analysis</h3>
+                  <p className="text-muted-foreground">{article.ai_analysis}</p>
+                </div>
+              )}
+
+              {article.ai_what_we_know && (
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">What We Know Now</h3>
+                  <div className="text-muted-foreground whitespace-pre-wrap">{article.ai_what_we_know}</div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="border-t pt-6 mt-6 text-center">
+              <p className="text-muted-foreground mb-4">
+                Get AI-powered analysis including summary, context, timeline, and insights
+              </p>
+              <Button
+                onClick={handleEnrich}
+                disabled={isEnriching}
+                variant="outline"
+              >
+                {isEnriching ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Generating Analysis...
+                  </>
+                ) : (
+                  'Generate AI Analysis'
+                )}
+              </Button>
             </div>
           )}
 

@@ -48,6 +48,12 @@ export type Database = {
       }
       articles: {
         Row: {
+          ai_analysis: string | null
+          ai_context: string | null
+          ai_enriched_at: string | null
+          ai_summary: string | null
+          ai_timeline: string | null
+          ai_what_we_know: string | null
           category: string | null
           comments_count: number | null
           content: string | null
@@ -65,6 +71,12 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ai_analysis?: string | null
+          ai_context?: string | null
+          ai_enriched_at?: string | null
+          ai_summary?: string | null
+          ai_timeline?: string | null
+          ai_what_we_know?: string | null
           category?: string | null
           comments_count?: number | null
           content?: string | null
@@ -82,6 +94,12 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ai_analysis?: string | null
+          ai_context?: string | null
+          ai_enriched_at?: string | null
+          ai_summary?: string | null
+          ai_timeline?: string | null
+          ai_what_we_know?: string | null
           category?: string | null
           comments_count?: number | null
           content?: string | null
