@@ -9,6 +9,14 @@ import { formatDistanceToNow } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function ArticleDetail() {
   const { sourceUrl } = useParams();
@@ -134,6 +142,59 @@ export default function ArticleDetail() {
   const articleTitle = `${article.title} - Sweden Update`;
   const articleDescription = article.summary || article.title;
 
+  // Schema.org structured data for Article
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": article.title,
+    "description": articleDescription,
+    "image": article.image_url || undefined,
+    "datePublished": article.published_at,
+    "dateModified": article.updated_at,
+    "author": {
+      "@type": "Organization",
+      "name": article.source_name
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Sweden Update",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://swedenupdate.com/favicon.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalUrl
+    }
+  };
+
+  // Breadcrumb structured data
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://swedenupdate.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": article.category || "News",
+        "item": `https://swedenupdate.com/?category=${article.category || 'general'}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": article.title,
+        "item": canonicalUrl
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
@@ -150,14 +211,35 @@ export default function ArticleDetail() {
         <meta name="twitter:title" content={article.title} />
         <meta name="twitter:description" content={articleDescription} />
         {article.image_url && <meta name="twitter:image" content={article.image_url} />}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbStructuredData)}
+        </script>
       </Helmet>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
-          </Button>
-        </Link>
+        <Breadcrumb className="mb-6">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/?category=${article.category || 'general'}`}>
+                  {article.category || 'News'}
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{stripHtml(article.title).substring(0, 50)}...</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
         <article className="space-y-6">
           {/* Header */}
