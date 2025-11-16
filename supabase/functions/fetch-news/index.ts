@@ -122,6 +122,50 @@ serve(async (req) => {
 
       console.log(`Successfully upserted ${uniqueArticles.length} articles`)
       
+      // Enrich new articles in the background
+      const enrichArticles = async () => {
+        try {
+          // Find articles that haven't been enriched yet
+          const { data: unenrichedArticles, error: queryError } = await supabaseClient
+            .from('articles')
+            .select('id')
+            .is('ai_enriched_at', null)
+            .limit(50)
+
+          if (queryError) {
+            console.error('Error querying unenriched articles:', queryError)
+            return
+          }
+
+          if (!unenrichedArticles || unenrichedArticles.length === 0) {
+            console.log('No articles to enrich')
+            return
+          }
+
+          console.log(`Starting enrichment for ${unenrichedArticles.length} articles`)
+
+          // Enrich each article (in background, no await)
+          for (const article of unenrichedArticles) {
+            supabaseClient.functions.invoke('enrich-article', {
+              body: { articleId: article.id }
+            }).then(({ error }) => {
+              if (error) {
+                console.error(`Failed to enrich article ${article.id}:`, error)
+              } else {
+                console.log(`Successfully enriched article ${article.id}`)
+              }
+            }).catch(err => {
+              console.error(`Error enriching article ${article.id}:`, err)
+            })
+          }
+        } catch (error) {
+          console.error('Error in enrichment process:', error)
+        }
+      }
+
+      // Start enrichment in background
+      EdgeRuntime.waitUntil(enrichArticles())
+
       return new Response(
         JSON.stringify({ 
           success: true, 
