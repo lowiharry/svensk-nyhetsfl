@@ -122,15 +122,15 @@ serve(async (req) => {
 
       console.log(`Successfully upserted ${uniqueArticles.length} articles`)
       
-      // Enrich new articles in the background
+      // Enrich new articles in the background with rate limiting
       const enrichArticles = async () => {
         try {
-          // Find articles that haven't been enriched yet
+          // Find articles that haven't been enriched yet - limit to 5 at a time
           const { data: unenrichedArticles, error: queryError } = await supabaseClient
             .from('articles')
             .select('id')
             .is('ai_enriched_at', null)
-            .limit(50)
+            .limit(5)
 
           if (queryError) {
             console.error('Error querying unenriched articles:', queryError)
@@ -142,22 +142,30 @@ serve(async (req) => {
             return
           }
 
-          console.log(`Starting enrichment for ${unenrichedArticles.length} articles`)
+          console.log(`Starting sequential enrichment for ${unenrichedArticles.length} articles`)
 
-          // Enrich each article (in background, no await)
+          // Enrich each article sequentially with delay to avoid rate limits
           for (const article of unenrichedArticles) {
-            supabaseClient.functions.invoke('enrich-article', {
-              body: { articleId: article.id }
-            }).then(({ error }) => {
+            try {
+              console.log(`Enriching article ${article.id}...`)
+              const { error } = await supabaseClient.functions.invoke('enrich-article', {
+                body: { articleId: article.id }
+              })
+              
               if (error) {
                 console.error(`Failed to enrich article ${article.id}:`, error)
               } else {
                 console.log(`Successfully enriched article ${article.id}`)
               }
-            }).catch(err => {
+              
+              // Wait 3 seconds between requests to avoid rate limits
+              await new Promise(resolve => setTimeout(resolve, 3000))
+            } catch (err) {
               console.error(`Error enriching article ${article.id}:`, err)
-            })
+            }
           }
+          
+          console.log('Enrichment batch complete')
         } catch (error) {
           console.error('Error in enrichment process:', error)
         }
