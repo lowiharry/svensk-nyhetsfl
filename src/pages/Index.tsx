@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { Header } from '@/components/Header';
@@ -234,13 +235,35 @@ const Index = () => {
         )}
 
         {/* Footer */}
-        <footer className="mt-12 py-8 border-t text-center text-sm text-muted-foreground">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span>🇸🇪</span>
-            <span>Sweden Update</span>
-            <span>🇸🇪</span>
+        <footer className="mt-12 py-8 border-t">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span>🇸🇪</span>
+                <span className="font-semibold">Sweden Update</span>
+                <span>🇸🇪</span>
+              </div>
+              <p className="text-sm text-muted-foreground text-center">
+                Your trusted source for Swedish news aggregation
+              </p>
+              <nav className="flex flex-wrap items-center justify-center gap-4 text-sm">
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
+                  About
+                </Link>
+                <span className="text-muted-foreground">•</span>
+                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+                  Contact
+                </Link>
+                <span className="text-muted-foreground">•</span>
+                <Link to="/privacy-policy" className="text-muted-foreground hover:text-primary transition-colors">
+                  Privacy Policy
+                </Link>
+              </nav>
+              <p className="text-xs text-muted-foreground">
+                © {new Date().getFullYear()} Sweden Update. All rights reserved.
+              </p>
+            </div>
           </div>
-          <p>Your trusted source for Swedish news aggregation</p>
         </footer>
       </main>
       

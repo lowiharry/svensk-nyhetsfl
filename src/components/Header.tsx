@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -36,7 +37,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 sm:h-16 items-center justify-between px-2 sm:px-4">
         {/* Logo */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
           <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0">
             <span className="text-white font-bold text-xs sm:text-sm">🇸🇪</span>
           </div>
@@ -46,7 +47,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
             </h1>
             <p className="text-xs text-muted-foreground hidden md:block">Latest Swedish News</p>
           </div>
-        </div>
+        </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-4 flex-1 max-w-2xl mx-8">
@@ -66,6 +67,25 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
             </Button>
           </form>
         </div>
+
+        {/* Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-1">
+          <Link to="/about">
+            <Button variant="ghost" size="sm" className="h-9">
+              About
+            </Button>
+          </Link>
+          <Link to="/contact">
+            <Button variant="ghost" size="sm" className="h-9">
+              Contact
+            </Button>
+          </Link>
+          <Link to="/privacy-policy">
+            <Button variant="ghost" size="sm" className="h-9">
+              Privacy
+            </Button>
+          </Link>
+        </nav>
 
         {/* Desktop Category Filter */}
         <div className="hidden xl:flex items-center gap-2">
@@ -124,6 +144,25 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
                 Search
               </Button>
             </form>
+
+            {/* Mobile Navigation Links */}
+            <div className="flex flex-col gap-2 mb-4">
+              <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start h-11">
+                  About
+                </Button>
+              </Link>
+              <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start h-11">
+                  Contact
+                </Button>
+              </Link>
+              <Link to="/privacy-policy" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start h-11">
+                  Privacy Policy
+                </Button>
+              </Link>
+            </div>
 
             {/* Mobile Categories */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
