@@ -80,7 +80,7 @@ Provide unique analysis and insights for this article.`;
 
     // Call Google Gemini API
     console.log('Calling Google Gemini for article:', articleId);
-    const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${googleApiKey}`, {
+    const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${googleApiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
