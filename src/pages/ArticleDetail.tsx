@@ -39,44 +39,8 @@ export default function ArticleDetail() {
     enabled: !!sourceUrl
   });
 
-  const [isEnriching, setIsEnriching] = useState(false);
-
   // Check if article is expired
   const isExpired = article && new Date(article.expiry_at) <= new Date();
-
-  const handleEnrich = async () => {
-    if (!article) return;
-    
-    setIsEnriching(true);
-    try {
-      const { error } = await supabase.functions.invoke('enrich-article', {
-        body: { articleId: article.id }
-      });
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: error.message || "Failed to enrich article",
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Success!",
-          description: "Article enriched with AI analysis"
-        });
-        refetch();
-      }
-    } catch (error) {
-      console.error('Enrichment error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to enrich article",
-        variant: "destructive"
-      });
-    } finally {
-      setIsEnriching(false);
-    }
-  };
 
   const handleShare = async () => {
     if (!article) return;
@@ -331,7 +295,7 @@ export default function ArticleDetail() {
           )}
 
           {/* AI Enrichments */}
-          {article.ai_enriched_at ? (
+          {article.ai_enriched_at && (
             <div className="space-y-6 border-t pt-6 mt-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">AI Analysis</h2>
@@ -374,26 +338,6 @@ export default function ArticleDetail() {
                   <div className="text-muted-foreground whitespace-pre-wrap">{article.ai_what_we_know}</div>
                 </div>
               )}
-            </div>
-          ) : (
-            <div className="border-t pt-6 mt-6 text-center">
-              <p className="text-muted-foreground mb-4">
-                Get AI-powered analysis including summary, context, timeline, and insights
-              </p>
-              <Button
-                onClick={handleEnrich}
-                disabled={isEnriching}
-                variant="outline"
-              >
-                {isEnriching ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Generating Analysis...
-                  </>
-                ) : (
-                  'Generate AI Analysis'
-                )}
-              </Button>
             </div>
           )}
 

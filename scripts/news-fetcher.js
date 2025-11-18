@@ -1,8 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Load environment variables from the local .env file
-dotenv.config();
+dotenv.config({ path: 'scripts/.env' });
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -89,27 +90,76 @@ const fetchFromWorldNewsAPI = async () => {
   }
 };
 
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+
+const enrichArticleWithAI = async (article) => {
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const prompt = `Analyze the following news article and provide a detailed analysis in JSON format. The article content is:
+
+    Title: ${article.title}
+    Content: ${article.content}
+
+    Please return a JSON object with the following fields:
+    - "summary": A concise summary of the article.
+    - "context": The broader context surrounding the story.
+    - "timeline": A timeline of key events.
+    - "analysis": An in-depth analysis of the situation.
+    - "what_we_know_now": A bulleted list of the most important facts.
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = await response.text();
+
+    // Clean the response to ensure it's valid JSON
+    const cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    const enrichedData = JSON.parse(cleanedText);
+
+    return {
+      ...article,
+      ai_summary: enrichedData.summary,
+      ai_context: enrichedData.context,
+      ai_timeline: enrichedData.timeline,
+      ai_analysis: enrichedData.analysis,
+      ai_what_we_know: enrichedData.what_we_know_now,
+      ai_enriched_at: new Date(),
+    };
+  } catch (error) {
+    console.error('Error enriching article with AI:', error);
+    return article;
+  }
+};
+
 const fetchAndSaveArticles = async () => {
   console.log('Fetching latest news from World News API...');
 
-  const allArticles = await fetchFromWorldNewsAPI();
+  let allArticles = await fetchFromWorldNewsAPI();
 
   if (allArticles.length > 0) {
-    console.log(`Upserting ${allArticles.length} articles to Supabase...`);
+    // Remove duplicates based on source_url
+    const uniqueArticles = [...new Map(allArticles.map(item => [item['source_url'], item])).values()];
+
+    console.log(`Enriching ${uniqueArticles.length} articles with AI...`);
+
+    const enrichedArticles = await Promise.all(uniqueArticles.map(enrichArticleWithAI));
+
+    console.log(`Upserting ${enrichedArticles.length} articles to Supabase...`);
 
     const { data, error } = await supabase
       .from('articles')
-      .upsert(allArticles, { onConflict: 'source_url' });
+      .upsert(enrichedArticles, { onConflict: 'source_url' });
 
     if (error) {
       console.error('Error upserting articles:', error);
     } else {
-      console.log(`Successfully upserted ${allArticles.length} articles from World News API.`);
+      console.log(`Successfully upserted ${enrichedArticles.length} articles from World News API.`);
     }
   } else {
     console.log('No new articles to save.');
   }
 };
+
 
 // Fetch articles immediately on start, then every 5 minutes
 fetchAndSaveArticles();
