@@ -7,9 +7,11 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Privacy Policy - Sweden Update</title>
-        <meta name="description" content="Read Sweden Update's privacy policy to understand how we collect, use, and protect your personal information." />
+        <title>Privacy Policy - Sweden Update | Swedish News Aggregation</title>
+        <meta name="description" content="Sweden Update Privacy Policy - Learn how we protect your data while providing breaking news Sweden, latest Swedish news today, and Sweden live updates. Our commitment to your privacy and data protection." />
+        <meta name="keywords" content="Sweden Update privacy policy, Swedish news privacy, data protection Sweden, news aggregation privacy" />
         <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://swedenupdate.com/privacy-policy" />
       </Helmet>
 
       <div className="container max-w-4xl mx-auto px-4 py-8">

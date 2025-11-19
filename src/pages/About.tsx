@@ -7,9 +7,11 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>About Us - Sweden Update</title>
-        <meta name="description" content="Learn more about Sweden Update, your trusted source for Swedish news aggregation and updates from major Swedish news outlets." />
+        <title>About Sweden Update - Your Trusted Source for Swedish News Today</title>
+        <meta name="description" content="Learn about Sweden Update - Your trusted source for breaking news Sweden, latest Swedish news today, Sweden politics, economy, weather alerts, crime news from Stockholm, Gothenburg, Malmö and all Sweden." />
+        <meta name="keywords" content="About Sweden Update, Swedish news aggregation, Sweden news source, breaking news Sweden, latest Swedish news, Sweden live updates, Swedish news today" />
         <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://swedenupdate.com/about" />
       </Helmet>
 
       <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -21,36 +23,40 @@ const About = () => {
         </Link>
 
         <article className="prose prose-slate dark:prose-invert max-w-none">
-          <h1 className="text-4xl font-bold mb-6">About Sweden Update</h1>
+          <h1 className="text-4xl font-bold mb-6">About Sweden Update - Your Source for Swedish News Today</h1>
           
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
+            <h2 className="text-2xl font-semibold mb-4">Our Mission: Delivering Breaking News Sweden</h2>
             <p className="text-muted-foreground leading-relaxed">
               Sweden Update is your trusted source for comprehensive Swedish news aggregation. 
-              We bring you the latest updates from major Swedish news outlets, providing a 
-              centralized platform to stay informed about what's happening in Sweden.
+              We bring you breaking news Sweden, latest Swedish news today, Sweden live updates,
+              and top stories from major Swedish news outlets including Aftonbladet, Expressen, 
+              DN, SvD, GP, and SVT - providing a centralized platform to stay informed about what's happening in Sweden.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">What We Do</h2>
+            <h2 className="text-2xl font-semibold mb-4">Latest Swedish News & Live Updates</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
               We aggregate news from leading Swedish media sources, making it easy for you to:
             </p>
             <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-              <li>Stay updated with the latest Swedish news across multiple categories</li>
-              <li>Access news from various trusted Swedish sources in one place</li>
+              <li>Stay updated with latest news Sweden and breaking stories across multiple categories</li>
+              <li>Get Sweden live updates from politics, economy, weather alerts, and crime news</li>
+              <li>Access Swedish news today from Stockholm, Gothenburg, Malmö, and nationwide</li>
               <li>Read AI-powered summaries and analysis of important stories</li>
-              <li>Navigate through categorized content including politics, economy, sports, culture, and more</li>
+              <li>Navigate through Sweden current events including sports, culture, technology, and lifestyle</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Our Commitment</h2>
+            <h2 className="text-2xl font-semibold mb-4">Swedish Daily News & Breaking Stories</h2>
             <p className="text-muted-foreground leading-relaxed">
               We are committed to providing accurate, timely, and comprehensive news coverage. 
-              Our platform respects the original sources and provides direct links to the full articles, 
-              ensuring you can access complete information from trusted Swedish news outlets.
+              From Sweden government announcements to Sweden traffic news, weather alerts to 
+              Sweden immigration updates - our platform respects the original sources and provides 
+              direct links to the full articles, ensuring you can access complete information from 
+              trusted Swedish news outlets for all Sweden top stories.
             </p>
           </section>
 

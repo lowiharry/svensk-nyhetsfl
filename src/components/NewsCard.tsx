@@ -96,7 +96,7 @@ export const NewsCard = ({ article }: NewsCardProps) => {
           {article.image_url && (
             <img 
               src={article.image_url} 
-              alt={article.title}
+              alt={`${article.title} - Sweden news, Swedish news today, breaking news ${article.category || 'update'}`}
               className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
               loading="lazy"
               onError={(e) => {

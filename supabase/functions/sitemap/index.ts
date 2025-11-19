@@ -99,18 +99,36 @@ serve(async (req) => {
     <changefreq>hourly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>${baseUrl}/about</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/contact</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/privacy-policy</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
   ${categories.map(category => `<url>
     <loc>${baseUrl}/category/${encodeURIComponent(category)}</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>`).join('\n  ')}
   ${(articles || []).map(article => {
     const encodedUrl = encodeURIComponent(article.source_url)
     const lastmod = new Date(article.updated_at || article.published_at).toISOString()
     const pubDate = new Date(article.published_at)
     const hoursSincePublished = (Date.now() - pubDate.getTime()) / (1000 * 60 * 60)
-    const priority = hoursSincePublished < 24 ? '0.8' : '0.6'
+    const priority = hoursSincePublished < 24 ? '0.9' : '0.7'
     
     return `<url>
     <loc>${baseUrl}/article/${encodedUrl}</loc>
