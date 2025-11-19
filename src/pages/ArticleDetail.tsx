@@ -140,8 +140,21 @@ export default function ArticleDetail() {
   }
 
   const canonicalUrl = `https://swedenupdate.com/article/${encodeURIComponent(sourceUrl)}`;
-  const articleTitle = `${article.title} - Sweden Update`;
+  const articleTitle = `${article.title} - Sweden Update | Latest Swedish News`;
   const articleDescription = article.summary || article.title;
+  
+  // Generate SEO keywords based on category
+  const categoryKeywords: Record<string, string> = {
+    'politics': 'Sweden politics news, Swedish election news, Riksdag news, Sweden government decisions',
+    'economy': 'Sweden economy news, Swedish krona updates, Sweden inflation reports, Sweden business headlines',
+    'weather': 'Sweden weather news, Sweden storm alerts, Sweden snow warnings, Swedish weather forecast today',
+    'crime': 'Sweden breaking crime news, Swedish police reports, Sweden accidents and incidents',
+    'lifestyle': 'Sweden lifestyle news, Sweden travel updates, Things to do in Sweden, Sweden cultural events',
+    'technology': 'Sweden tech news, Swedish startups, Sweden innovation updates',
+    'sports': 'Sweden sports news, Swedish sports updates, Sweden athletics'
+  };
+  
+  const seoKeywords = categoryKeywords[article.category?.toLowerCase() || ''] || 'Sweden news, Swedish news today, breaking news Sweden, latest news Sweden';
 
   // Schema.org structured data for Article
   const structuredData = {
@@ -152,6 +165,8 @@ export default function ArticleDetail() {
     "image": article.image_url || undefined,
     "datePublished": article.published_at,
     "dateModified": article.updated_at,
+    "keywords": seoKeywords,
+    "articleSection": article.category || "News",
     "author": {
       "@type": "Organization",
       "name": article.source_name
@@ -167,6 +182,11 @@ export default function ArticleDetail() {
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": canonicalUrl
+    },
+    "inLanguage": "sv",
+    "locationCreated": {
+      "@type": "Place",
+      "name": "Sweden"
     }
   };
 
@@ -201,6 +221,7 @@ export default function ArticleDetail() {
       <Helmet>
         <title>{articleTitle}</title>
         <meta name="description" content={articleDescription} />
+        <meta name="keywords" content={seoKeywords} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={articleDescription} />
@@ -208,6 +229,10 @@ export default function ArticleDetail() {
         <meta property="og:url" content={canonicalUrl} />
         {article.image_url && <meta property="og:image" content={article.image_url} />}
         <meta property="article:published_time" content={article.published_at} />
+        <meta property="article:section" content={article.category || 'News'} />
+        <meta property="article:tag" content="Sweden news" />
+        <meta property="article:tag" content="Swedish news today" />
+        <meta property="article:tag" content={article.category || 'breaking news'} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={article.title} />
         <meta name="twitter:description" content={articleDescription} />

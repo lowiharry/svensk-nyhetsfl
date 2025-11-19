@@ -105,8 +105,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Sweden Update - Latest Swedish News</title>
-        <meta name="description" content="Your trusted source for Swedish news aggregation. Get the latest updates from Aftonbladet, Expressen, DN, SvD, GP, and SVT." />
+        <title>Sweden News Today - Breaking News Sweden | Latest Swedish Headlines</title>
+        <meta name="description" content="Breaking news Sweden today - Get latest Swedish news, live updates, top stories, Sweden politics, economy, weather alerts, crime reports from Stockholm, Gothenburg, Malmö, Uppsala. Your trusted source for Swedish daily news." />
+        <meta name="keywords" content="Sweden news, Swedish news today, breaking news Sweden, latest news Sweden, Sweden live updates, Sweden headlines, Swedish daily news, Sweden top stories, Sweden current events, Sweden breaking stories" />
         <link rel="canonical" href="https://swedenupdate.com/" />
       </Helmet>
       <Header
@@ -132,6 +133,11 @@ const Index = () => {
             <FetchNewsButton />
           </div>
         </div>
+
+        {/* SEO Heading - Hidden visually but important for SEO */}
+        <h1 className="sr-only">
+          Breaking News Sweden Today - Latest Swedish News Headlines and Live Updates
+        </h1>
 
         {/* Search/Filter Results */}
         {(searchQuery || selectedCategory !== 'all') && (
