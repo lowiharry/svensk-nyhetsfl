@@ -1,10 +1,10 @@
 import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ExternalLink, Clock, Share2 } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Clock, Share2, Sparkles } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
@@ -37,6 +37,31 @@ export default function ArticleDetail() {
       return data;
     },
     enabled: !!sourceUrl
+  });
+
+  const enrichMutation = useMutation({
+    mutationFn: async (articleId: string) => {
+      const { data, error } = await supabase.functions.invoke('enrich-article', {
+        body: { articleId }
+      });
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success!",
+        description: "Article enriched with AI analysis"
+      });
+      refetch();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to enrich article",
+        variant: "destructive"
+      });
+    }
   });
 
   // Check if article is expired
@@ -367,7 +392,7 @@ export default function ArticleDetail() {
           )}
 
           {/* Actions */}
-          <div className="flex gap-3 pt-6 border-t">
+          <div className="flex gap-3 pt-6 border-t flex-wrap">
             <Button
               variant="outline"
               onClick={handleShare}
@@ -376,6 +401,22 @@ export default function ArticleDetail() {
               <Share2 className="w-4 h-4" />
               Share Article
             </Button>
+            
+            {!article.ai_enriched_at && (
+              <Button
+                variant="outline"
+                onClick={() => enrichMutation.mutate(article.id)}
+                disabled={enrichMutation.isPending}
+                className="flex items-center gap-2"
+              >
+                {enrichMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Sparkles className="w-4 h-4" />
+                )}
+                Generate AI Analysis
+              </Button>
+            )}
             
             <Button
               onClick={() => window.open(article.source_url, '_blank')}
