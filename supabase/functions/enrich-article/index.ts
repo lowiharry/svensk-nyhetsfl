@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 
@@ -23,10 +24,10 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const googleApiKey = Deno.env.get('GOOGLE_AI_STUDIO_KEY');
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
-    if (!googleApiKey) {
-      throw new Error('GOOGLE_AI_STUDIO_KEY is not configured');
+    if (!lovableApiKey) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -65,9 +66,7 @@ serve(async (req) => {
 
 Format your response as JSON with keys: summary, context, timeline, analysis, whatWeKnow`;
 
-    const fullPrompt = `${systemPrompt}
-
-Article Title: ${article.title}
+    const userPrompt = `Article Title: ${article.title}
 
 Source: ${article.source_name}
 Published: ${article.published_at}
@@ -78,52 +77,50 @@ ${article.content ? `Content: ${article.content}` : ''}
 
 Provide unique analysis and insights for this article.`;
 
-    // Call Google Gemini API with gemini-2.5-flash model
-    console.log('Calling Google Gemini for article:', articleId);
-    const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${googleApiKey}`, {
+    // Call Lovable AI Gateway
+    console.log('Calling Lovable AI for article:', articleId);
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: fullPrompt
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 2000,
-        }
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        stream: false,
       }),
     });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error('Google Gemini API error:', aiResponse.status, errorText);
+      console.error('Lovable AI Gateway error:', aiResponse.status, errorText);
       
       if (aiResponse.status === 429) {
         return new Response(
-          JSON.stringify({ error: 'Google API rate limit exceeded. Please try again later.' }),
+          JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
-      if (aiResponse.status === 403) {
+      if (aiResponse.status === 402) {
         return new Response(
-          JSON.stringify({ error: 'Google API key invalid or expired. Please check your API key.' }),
-          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          JSON.stringify({ error: 'Payment required. Please add credits to your Lovable AI workspace.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
-      throw new Error(`Google Gemini API error: ${aiResponse.status}`);
+      throw new Error(`Lovable AI Gateway error: ${aiResponse.status}`);
     }
 
     const aiData = await aiResponse.json();
-    const aiContent = aiData.candidates?.[0]?.content?.parts?.[0]?.text;
+    const aiContent = aiData.choices?.[0]?.message?.content;
     
     if (!aiContent) {
-      throw new Error('No content received from Google Gemini API');
+      throw new Error('No content received from Lovable AI');
     }
     
     console.log('AI response received:', aiContent.substring(0, 200));
