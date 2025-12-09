@@ -18,6 +18,20 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import swedenFlag from '@/assets/sweden-flag.png';
+
+const SEO_ALT_TAGS = [
+  "Latest Sweden news update",
+  "Breaking news in Sweden today",
+  "Sweden Update live headline image",
+  "Current events in Sweden photo",
+  "Swedish news article image",
+  "News photo from Sweden Update website"
+];
+
+const getRandomAltTag = () => {
+  return SEO_ALT_TAGS[Math.floor(Math.random() * SEO_ALT_TAGS.length)];
+};
 
 export default function ArticleDetail() {
   const { sourceUrl } = useParams();
@@ -319,16 +333,14 @@ export default function ArticleDetail() {
           </div>
 
           {/* Image */}
-          {article.image_url && (
-            <img 
-              src={article.image_url} 
-              alt={article.title}
-              className="w-full rounded-lg shadow-lg"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          )}
+          <img 
+            src={article.image_url || swedenFlag} 
+            alt={`${getRandomAltTag()} - ${article.title}`}
+            className="w-full rounded-lg shadow-lg"
+            onError={(e) => {
+              e.currentTarget.src = swedenFlag;
+            }}
+          />
 
           {/* Summary */}
           {article.summary && (
