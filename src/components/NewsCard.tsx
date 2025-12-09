@@ -6,7 +6,20 @@ import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { Link } from 'react-router-dom';
+import swedenFlag from '@/assets/sweden-flag.png';
 
+const SEO_ALT_TAGS = [
+  "Latest Sweden news update",
+  "Breaking news in Sweden today",
+  "Sweden Update live headline image",
+  "Current events in Sweden photo",
+  "Swedish news article image",
+  "News photo from Sweden Update website"
+];
+
+const getRandomAltTag = () => {
+  return SEO_ALT_TAGS[Math.floor(Math.random() * SEO_ALT_TAGS.length)];
+};
 interface Article {
   id: string;
   title: string;
@@ -93,17 +106,15 @@ export const NewsCard = ({ article }: NewsCardProps) => {
               </span>
             </div>
           </div>
-          {article.image_url && (
-            <img 
-              src={article.image_url} 
-              alt={`${article.title} - Sweden news, Swedish news today, breaking news ${article.category || 'update'}`}
-              className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
-              loading="lazy"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          )}
+          <img 
+            src={article.image_url || swedenFlag} 
+            alt={`${getRandomAltTag()} - ${article.title}`}
+            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src = swedenFlag;
+            }}
+          />
         </div>
       </CardHeader>
       
