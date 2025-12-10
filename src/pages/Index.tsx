@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -209,11 +209,21 @@ const Index = () => {
         {allArticles.length > 0 && (
           <>
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-              {allArticles.map((article) => (
-                <NewsCard
-                  key={article.id}
-                  article={article}
-                />
+              {allArticles.map((article, index) => (
+                <React.Fragment key={article.id}>
+                  <NewsCard article={article} />
+                  {/* Insert in-feed ad after every 2 articles */}
+                  {(index + 1) % 2 === 0 && (
+                    <div className="sm:col-span-2 xl:col-span-3 2xl:col-span-4">
+                      <AdSense 
+                        adSlot="9759678125" 
+                        adFormat="fluid" 
+                        adLayoutKey="-gc-2a-1a-6o+yu"
+                        className="w-full my-2"
+                      />
+                    </div>
+                  )}
+                </React.Fragment>
               ))}
             </div>
 
