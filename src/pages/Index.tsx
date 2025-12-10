@@ -7,6 +7,7 @@ import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
 import { FetchNewsButton } from '@/components/FetchNewsButton';
 import { BackToTop } from '@/components/BackToTop';
+import AdSense from '@/components/AdSense';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useFetchNews } from '@/hooks/use-fetch-news';
@@ -239,6 +240,11 @@ const Index = () => {
             )}
           </>
         )}
+
+        {/* Ad Unit */}
+        <div className="my-8">
+          <AdSense adSlot="8394432048" className="w-full" />
+        </div>
 
         {/* Footer */}
         <footer className="mt-12 py-8 border-t">
