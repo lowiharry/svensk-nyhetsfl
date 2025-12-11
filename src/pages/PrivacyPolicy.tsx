@@ -10,6 +10,7 @@ const PrivacyPolicy = () => {
         <title>Privacy Policy - Sweden Update | Swedish News Aggregation</title>
         <meta name="description" content="Sweden Update Privacy Policy - Learn how we protect your data while providing breaking news Sweden, latest Swedish news today, and Sweden live updates. Our commitment to your privacy and data protection." />
         <meta name="keywords" content="Sweden Update privacy policy, Swedish news privacy, data protection Sweden, news aggregation privacy" />
+        <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://swedenupdate.com/privacy-policy" />
       </Helmet>

@@ -10,6 +10,7 @@ const About = () => {
         <title>About Sweden Update - Your Trusted Source for Swedish News Today</title>
         <meta name="description" content="Learn about Sweden Update - Your trusted source for breaking news Sweden, latest Swedish news today, Sweden politics, economy, weather alerts, crime news from Stockholm, Gothenburg, Malmö and all Sweden." />
         <meta name="keywords" content="About Sweden Update, Swedish news aggregation, Sweden news source, breaking news Sweden, latest Swedish news, Sweden live updates, Swedish news today" />
+        <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://swedenupdate.com/about" />
       </Helmet>
