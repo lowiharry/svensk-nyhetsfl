@@ -11,6 +11,7 @@ const Contact = () => {
         <title>Contact Sweden Update - Swedish News Today Questions & Feedback</title>
         <meta name="description" content="Contact Sweden Update for inquiries about breaking news Sweden, Swedish news today, partnerships, feedback about our Sweden live updates and latest news coverage. Email: swedenupdatenews@gmail.com" />
         <meta name="keywords" content="Contact Sweden Update, Swedish news contact, Sweden Update news email, breaking news Sweden feedback, latest Swedish news inquiries" />
+        <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://swedenupdate.com/contact" />
       </Helmet>
