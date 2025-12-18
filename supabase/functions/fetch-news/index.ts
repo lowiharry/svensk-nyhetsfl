@@ -6,42 +6,33 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Function to translate text to English using Lovable AI
+// Function to translate text to English using DeepL API
 async function translateToEnglish(text: string, apiKey: string): Promise<string> {
   if (!text || text.trim() === '') return text
   
   try {
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api-free.deepl.com/v2/translate', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `DeepL-Auth-Key ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a professional translator. Translate the following text to English. If the text is already in English, return it unchanged. Only return the translated text, nothing else. Preserve any formatting, punctuation, and special characters.'
-          },
-          {
-            role: 'user',
-            content: text
-          }
-        ],
+        text: [text],
+        target_lang: 'EN',
       }),
     })
 
     if (!response.ok) {
-      console.error('Translation API error:', response.status)
+      console.error('DeepL Translation API error:', response.status)
       return text // Return original on error
     }
 
     const data = await response.json()
-    const translatedText = data.choices?.[0]?.message?.content?.trim()
+    const translatedText = data.translations?.[0]?.text?.trim()
     return translatedText || text
   } catch (error) {
-    console.error('Translation error:', error)
+    console.error('DeepL Translation error:', error)
     return text // Return original on error
   }
 }
@@ -73,9 +64,9 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
-    if (!lovableApiKey) {
-      console.error('LOVABLE_API_KEY not configured')
+    const deeplApiKey = Deno.env.get('DEEPL_API_KEY')
+    if (!deeplApiKey) {
+      console.error('DEEPL_API_KEY not configured')
       throw new Error('Translation service not configured')
     }
 
@@ -183,7 +174,7 @@ serve(async (req) => {
         console.log(`Translating batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(uniqueArticles.length / batchSize)}`)
         
         const translatedBatch = await Promise.all(
-          batch.map(article => translateArticle(article, lovableApiKey))
+          batch.map(article => translateArticle(article, deeplApiKey))
         )
         translatedArticles.push(...translatedBatch)
         
