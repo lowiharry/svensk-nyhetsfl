@@ -37,13 +37,19 @@ async function translateToEnglish(text: string, apiKey: string): Promise<string>
   }
 }
 
-// Function to translate an article object
+// Helper function to add delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+// Function to translate an article object - sequential to avoid rate limits
 async function translateArticle(article: any, apiKey: string): Promise<any> {
-  const [translatedTitle, translatedSummary, translatedContent] = await Promise.all([
-    translateToEnglish(article.title, apiKey),
-    translateToEnglish(article.summary, apiKey),
-    translateToEnglish(article.content, apiKey),
-  ])
+  // Translate sequentially with delays to avoid rate limits
+  const translatedTitle = await translateToEnglish(article.title, apiKey)
+  await delay(500) // 500ms between requests
+  
+  const translatedSummary = await translateToEnglish(article.summary, apiKey)
+  await delay(500)
+  
+  const translatedContent = await translateToEnglish(article.content, apiKey)
 
   return {
     ...article,
@@ -164,23 +170,18 @@ serve(async (req) => {
       
       console.log(`Unique articles after deduplication: ${uniqueArticles.length}`)
       
-      // Translate articles to English (process in batches of 5 to avoid rate limits)
-      console.log('Starting translation to English...')
+      // Translate articles to English - process sequentially to avoid rate limits
+      console.log('Starting translation to English (sequential to avoid rate limits)...')
       const translatedArticles = []
-      const batchSize = 5
       
-      for (let i = 0; i < uniqueArticles.length; i += batchSize) {
-        const batch = uniqueArticles.slice(i, i + batchSize)
-        console.log(`Translating batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(uniqueArticles.length / batchSize)}`)
+      for (let i = 0; i < uniqueArticles.length; i++) {
+        console.log(`Translating article ${i + 1}/${uniqueArticles.length}`)
+        const translated = await translateArticle(uniqueArticles[i], deeplApiKey)
+        translatedArticles.push(translated)
         
-        const translatedBatch = await Promise.all(
-          batch.map(article => translateArticle(article, deeplApiKey))
-        )
-        translatedArticles.push(...translatedBatch)
-        
-        // Add delay between batches to avoid rate limits
-        if (i + batchSize < uniqueArticles.length) {
-          await new Promise(resolve => setTimeout(resolve, 1000))
+        // Add delay between articles
+        if (i < uniqueArticles.length - 1) {
+          await delay(1000)
         }
       }
       
