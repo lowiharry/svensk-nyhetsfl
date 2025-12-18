@@ -6,6 +6,62 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Function to translate text to English using Lovable AI
+async function translateToEnglish(text: string, apiKey: string): Promise<string> {
+  if (!text || text.trim() === '') return text
+  
+  try {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional translator. Translate the following text to English. If the text is already in English, return it unchanged. Only return the translated text, nothing else. Preserve any formatting, punctuation, and special characters.'
+          },
+          {
+            role: 'user',
+            content: text
+          }
+        ],
+      }),
+    })
+
+    if (!response.ok) {
+      console.error('Translation API error:', response.status)
+      return text // Return original on error
+    }
+
+    const data = await response.json()
+    const translatedText = data.choices?.[0]?.message?.content?.trim()
+    return translatedText || text
+  } catch (error) {
+    console.error('Translation error:', error)
+    return text // Return original on error
+  }
+}
+
+// Function to translate an article object
+async function translateArticle(article: any, apiKey: string): Promise<any> {
+  const [translatedTitle, translatedSummary, translatedContent] = await Promise.all([
+    translateToEnglish(article.title, apiKey),
+    translateToEnglish(article.summary, apiKey),
+    translateToEnglish(article.content, apiKey),
+  ])
+
+  return {
+    ...article,
+    title: translatedTitle,
+    summary: translatedSummary,
+    content: translatedContent,
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -16,6 +72,12 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
+
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
+    if (!lovableApiKey) {
+      console.error('LOVABLE_API_KEY not configured')
+      throw new Error('Translation service not configured')
+    }
 
     // Swedish news sources RSS feeds
     const swedishNewsSources = [
@@ -28,7 +90,7 @@ serve(async (req) => {
       { name: 'DN Ekonomi', url: 'https://www.dn.se/ekonomi/rss/', category: 'business' }
     ]
 
-    console.log('Starting Swedish news fetch...')
+    console.log('Starting Swedish news fetch with English translation...')
 
     const allArticles = []
 
@@ -111,16 +173,38 @@ serve(async (req) => {
       
       console.log(`Unique articles after deduplication: ${uniqueArticles.length}`)
       
+      // Translate articles to English (process in batches of 5 to avoid rate limits)
+      console.log('Starting translation to English...')
+      const translatedArticles = []
+      const batchSize = 5
+      
+      for (let i = 0; i < uniqueArticles.length; i += batchSize) {
+        const batch = uniqueArticles.slice(i, i + batchSize)
+        console.log(`Translating batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(uniqueArticles.length / batchSize)}`)
+        
+        const translatedBatch = await Promise.all(
+          batch.map(article => translateArticle(article, lovableApiKey))
+        )
+        translatedArticles.push(...translatedBatch)
+        
+        // Add delay between batches to avoid rate limits
+        if (i + batchSize < uniqueArticles.length) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+      }
+      
+      console.log(`Successfully translated ${translatedArticles.length} articles`)
+      
       const { data, error } = await supabaseClient
         .from('articles')
-        .upsert(uniqueArticles, { onConflict: 'source_url' })
+        .upsert(translatedArticles, { onConflict: 'source_url' })
 
       if (error) {
         console.error('Error upserting articles:', error)
         throw error
       }
 
-      console.log(`Successfully upserted ${uniqueArticles.length} articles`)
+      console.log(`Successfully upserted ${translatedArticles.length} translated articles`)
       
       // Enrich new articles in the background with rate limiting
       const enrichArticles = async () => {
@@ -177,8 +261,8 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: `Successfully fetched and saved ${uniqueArticles.length} articles`,
-          articles_count: uniqueArticles.length
+          message: `Successfully fetched, translated, and saved ${translatedArticles.length} articles`,
+          articles_count: translatedArticles.length
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
