@@ -6,25 +6,47 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+let deeplDebugLogged = false
+
 // Function to translate text to English using DeepL API
 async function translateToEnglish(text: string, apiKey: string): Promise<string> {
   if (!text || text.trim() === '') return text
-  
+
+  // DeepL uses different base URLs for Free vs Pro plans
+  // - Free keys typically end with ":fx" and must use api-free.deepl.com
+  // - Pro keys use api.deepl.com
+  const trimmedKey = apiKey.trim()
+  const baseUrl = trimmedKey.endsWith(':fx')
+    ? 'https://api-free.deepl.com'
+    : 'https://api.deepl.com'
+
+  if (!deeplDebugLogged) {
+    deeplDebugLogged = true
+    console.log('DeepL debug:', {
+      baseUrl,
+      keySuffix: trimmedKey.slice(-3),
+      keyLength: trimmedKey.length,
+    })
+  }
+
   try {
-    const response = await fetch('https://api-free.deepl.com/v2/translate', {
+    const body = new URLSearchParams({
+      text,
+      target_lang: 'EN',
+    })
+
+    const response = await fetch(`${baseUrl}/v2/translate`, {
       method: 'POST',
       headers: {
         'Authorization': `DeepL-Auth-Key ${apiKey}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        text: [text],
-        target_lang: 'EN',
-      }),
+      body,
     })
 
     if (!response.ok) {
-      console.error('DeepL Translation API error:', response.status)
+      const errText = await response.text().catch(() => '')
+      console.error('DeepL Translation API error:', response.status, errText)
       return text // Return original on error
     }
 
