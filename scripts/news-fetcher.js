@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import * as deepl from 'deepl-node';
 
 // Load environment variables from the local .env file
 dotenv.config({ path: 'scripts/.env' });
@@ -15,6 +16,14 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+const deeplApiKey = process.env.DEEPL_API_KEY;
+if (!deeplApiKey) {
+  console.error('DeepL API key not found. Make sure you have a .env file with DEEPL_API_KEY');
+  process.exit(1);
+}
+const translator = new deepl.Translator(deeplApiKey);
+
+
 // World News API configuration
 const WORLD_NEWS_API_KEY = '8d0886c7630047fea8bba6e51df9d21e';
 const WORLD_NEWS_API_URL = 'https://api.worldnewsapi.com/search-news';
@@ -23,13 +32,11 @@ const fetchFromWorldNewsAPI = async () => {
   try {
     // Fetch latest news from multiple languages and sources
     const searchQueries = [
-      { text: 'breaking news', language: 'en', number: 25 },
-      { text: 'politics', language: 'en', number: 15 },
-      { text: 'technology', language: 'en', number: 15 },
-      { text: 'business', language: 'en', number: 15 },
-      { text: 'health', language: 'en', number: 10 },
-      { text: 'sports', language: 'en', number: 10 },
-      { text: 'science', language: 'en', number: 10 }
+      { text: 'breaking news', language: 'en', number: 10 },
+      { text: 'actualités', language: 'fr', number: 10 }, // French
+      { text: 'noticias', language: 'es', number: 10 },    // Spanish
+      { text: 'nachrichten', language: 'de', number: 10 }, // German
+      { text: 'ultime notizie', language: 'it', number: 10 }, // Italian
     ];
 
     const allArticles = [];
@@ -92,6 +99,28 @@ const fetchFromWorldNewsAPI = async () => {
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
+const translateArticle = async (article) => {
+  if (!article.title || !article.content) {
+    console.warn('Article has no title or content, skipping translation.');
+    return article;
+  }
+
+  try {
+    console.log(`Translating article: ${article.title}`);
+    const textsToTranslate = [article.title, article.content];
+    const translations = await translator.translateText(textsToTranslate, null, 'en-US');
+
+    return {
+      ...article,
+      title: translations[0].text,
+      content: translations[1].text,
+    };
+  } catch (error) {
+    console.error('Error translating article:', error);
+    return article; // Return original article on error
+  }
+};
+
 const enrichArticleWithAI = async (article) => {
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
@@ -140,9 +169,11 @@ const fetchAndSaveArticles = async () => {
     // Remove duplicates based on source_url
     const uniqueArticles = [...new Map(allArticles.map(item => [item['source_url'], item])).values()];
 
-    console.log(`Enriching ${uniqueArticles.length} articles with AI...`);
+    console.log(`Translating ${uniqueArticles.length} articles...`);
+    const translatedArticles = await Promise.all(uniqueArticles.map(translateArticle));
 
-    const enrichedArticles = await Promise.all(uniqueArticles.map(enrichArticleWithAI));
+    console.log(`Enriching ${translatedArticles.length} articles with AI...`);
+    const enrichedArticles = await Promise.all(translatedArticles.map(enrichArticleWithAI));
 
     console.log(`Upserting ${enrichedArticles.length} articles to Supabase...`);
 
