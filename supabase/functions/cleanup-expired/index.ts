@@ -17,13 +17,12 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const ninetyDaysAgo = new Date()
-    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
+    const now = new Date()
 
     const { data: expiredArticles, error: selectError } = await supabaseClient
       .from('articles')
       .select('id')
-      .lt('published_at', ninetyDaysAgo.toISOString())
+      .lt('expiry_at', now.toISOString())
 
     if (selectError) {
       console.error('Error selecting expired articles:', selectError)
