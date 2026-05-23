@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ExternalLink, Clock, Share2, Sparkles } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Clock, Share2, Sparkles, Facebook } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
@@ -77,6 +77,45 @@ export default function ArticleDetail() {
         variant: "destructive"
       });
     }
+  });
+
+  const shareToFacebookMutation = useMutation({
+    mutationFn: async () => {
+      if (!article) throw new Error('No article');
+      let token = localStorage.getItem('admin_share_token');
+      if (!token) {
+        token = window.prompt('Enter admin token to post to Facebook:') || '';
+        if (!token) throw new Error('Admin token required');
+        localStorage.setItem('admin_share_token', token);
+      }
+      const link = `https://swedenupdate.com/article/${encodeURIComponent(article.source_url)}`;
+      const { data, error } = await supabase.functions.invoke('share-to-facebook', {
+        body: {
+          title: stripHtml(article.title),
+          link,
+          imageUrl: article.image_url || null,
+        },
+        headers: { 'x-admin-token': token },
+      });
+      if (error) throw error;
+      if (data?.error) {
+        if (data.error === 'Unauthorized') {
+          localStorage.removeItem('admin_share_token');
+        }
+        throw new Error(typeof data.error === 'string' ? data.error : 'Failed to share');
+      }
+      return data;
+    },
+    onSuccess: () => {
+      toast({ title: 'Posted!', description: 'Article shared to your Facebook Page.' });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to share to Facebook',
+        variant: 'destructive',
+      });
+    },
   });
 
   // Check if article is expired
@@ -420,6 +459,20 @@ export default function ArticleDetail() {
             >
               <Share2 className="w-4 h-4" />
               Share Article
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => shareToFacebookMutation.mutate()}
+              disabled={shareToFacebookMutation.isPending}
+              className="flex items-center gap-2"
+            >
+              {shareToFacebookMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Facebook className="w-4 h-4" />
+              )}
+              Post to Facebook
             </Button>
             
             {!article.ai_enriched_at && (
