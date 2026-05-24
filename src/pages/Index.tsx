@@ -111,6 +111,7 @@ const Index = () => {
         <meta name="keywords" content="Sweden news, Swedish news today, breaking news Sweden, latest news Sweden, Sweden live updates, Sweden headlines, Swedish daily news, Sweden top stories, Sweden current events, Sweden breaking stories" />
         <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <link rel="canonical" href="https://swedenupdate.com/" />
+        <script src="https://app.trysoro.com/api/embed/a3cbb930-523a-4c15-9fab-d8d98d008214?theme=dark" defer></script>
       </Helmet>
       <Header
         onSearch={setSearchQuery}
@@ -119,6 +120,9 @@ const Index = () => {
       />
       
       <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+        {/* Soro Blog Embed */}
+        <div id="soro-blog" className="mb-6"></div>
+
         {/* Status Bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 border gap-3 sm:gap-0">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
