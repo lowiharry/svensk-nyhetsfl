@@ -225,6 +225,7 @@ const Index = () => {
                         adFormat="fluid" 
                         adLayoutKey="-gc-2a-1a-6o+yu"
                         className="w-full my-2"
+                        minHeight="280px"
                       />
                     </div>
                   )}
@@ -258,7 +259,7 @@ const Index = () => {
 
         {/* Ad Unit */}
         <div className="my-8">
-          <AdSense adSlot="8394432048" className="w-full" />
+          <AdSense adSlot="8394432048" className="w-full" minHeight="250px" />
         </div>
 
         {/* Footer */}

@@ -12,6 +12,7 @@ interface AdSenseProps {
   adLayoutKey?: string;
   fullWidthResponsive?: boolean;
   className?: string;
+  minHeight?: string;
 }
 
 const AdSense = ({ 
@@ -19,7 +20,8 @@ const AdSense = ({
   adFormat = "auto",
   adLayoutKey,
   fullWidthResponsive = true,
-  className = ""
+  className = "",
+  minHeight = "100px"
 }: AdSenseProps) => {
   useEffect(() => {
     try {
@@ -30,10 +32,10 @@ const AdSense = ({
   }, []);
 
   return (
-    <div className={className}>
+    <div className={className} style={{ minHeight }}>
       <ins
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{ display: 'block', minHeight }}
         data-ad-client="ca-pub-3000410248339228"
         data-ad-slot={adSlot}
         data-ad-format={adFormat}

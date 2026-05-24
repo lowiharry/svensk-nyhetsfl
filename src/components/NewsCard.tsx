@@ -106,15 +106,19 @@ export const NewsCard = ({ article }: NewsCardProps) => {
               </span>
             </div>
           </div>
-          <img 
-            src={article.image_url || swedenFlag} 
-            alt={`${getRandomAltTag()} - ${article.title}`}
-            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.src = swedenFlag;
-            }}
-          />
+          <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-muted rounded-lg overflow-hidden">
+            <img
+              src={article.image_url || swedenFlag}
+              alt={`${getRandomAltTag()} - ${article.title}`}
+              width={96}
+              height={96}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.src = swedenFlag;
+              }}
+            />
+          </div>
         </div>
       </CardHeader>
       

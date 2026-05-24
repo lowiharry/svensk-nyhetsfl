@@ -374,14 +374,18 @@ export default function ArticleDetail() {
           </div>
 
           {/* Image */}
-          <img 
-            src={article.image_url || swedenFlag} 
-            alt={`${getRandomAltTag()} - ${article.title}`}
-            className="w-full rounded-lg shadow-lg"
-            onError={(e) => {
-              e.currentTarget.src = swedenFlag;
-            }}
-          />
+          <div className="w-full aspect-video bg-muted rounded-lg shadow-lg overflow-hidden relative">
+            <img
+              src={article.image_url || swedenFlag}
+              alt={`${getRandomAltTag()} - ${article.title}`}
+              width={1200}
+              height={675}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = swedenFlag;
+              }}
+            />
+          </div>
 
           {/* Summary */}
           {article.summary && (
@@ -396,6 +400,7 @@ export default function ArticleDetail() {
             adFormat="fluid" 
             adLayoutKey="-gc-2a-1a-6o+yu"
             className="w-full my-4"
+            minHeight="280px"
           />
           {article.content && (
             <div className="prose prose-lg max-w-none">
@@ -502,7 +507,7 @@ export default function ArticleDetail() {
 
           {/* Bottom Ad Unit */}
           <div className="mt-8">
-            <AdSense adSlot="8394432048" className="w-full" />
+            <AdSense adSlot="8394432048" className="w-full" minHeight="250px" />
           </div>
         </article>
       </div>
