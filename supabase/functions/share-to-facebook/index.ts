@@ -11,20 +11,11 @@ serve(async (req) => {
   }
 
   try {
-    const adminToken = Deno.env.get("ADMIN_SHARE_TOKEN");
     const pageToken = Deno.env.get("FACEBOOK_PAGE_ACCESS_TOKEN");
     const pageId = Deno.env.get("FACEBOOK_PAGE_ID");
 
-    if (!adminToken || !pageToken || !pageId) {
+    if (!pageToken || !pageId) {
       throw new Error("Facebook sharing is not configured");
-    }
-
-    const providedToken = req.headers.get("x-admin-token");
-    if (providedToken !== adminToken) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
     }
 
     const body = await req.json();
