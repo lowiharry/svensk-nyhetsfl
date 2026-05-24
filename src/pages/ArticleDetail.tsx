@@ -90,7 +90,10 @@ export default function ArticleDetail() {
           imageUrl: article.image_url || null,
         },
       });
-      if (error) throw error;
+      if (error) {
+        const context = typeof error.context === 'object' && error.context !== null ? error.context as { error?: string } : null;
+        throw new Error(context?.error || error.message || 'Failed to share to Facebook');
+      }
       if (data?.error) {
         throw new Error(typeof data.error === 'string' ? data.error : 'Failed to share');
       }
