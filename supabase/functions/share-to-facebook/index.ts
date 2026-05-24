@@ -28,7 +28,7 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { title, link, imageUrl } = body ?? {};
+    const { title, link, imageUrl, summary } = body ?? {};
 
     if (typeof title !== "string" || typeof link !== "string" || !title.trim() || !link.trim()) {
       return new Response(
@@ -37,7 +37,9 @@ serve(async (req) => {
       );
     }
 
-    const caption = `${title}\n\n${link}`;
+    const caption = summary
+      ? `${title}\n\n${summary}\n\nRead more: ${link}`
+      : `${title}\n\n${link}`;
     let endpoint: string;
     let payload: Record<string, string>;
 
