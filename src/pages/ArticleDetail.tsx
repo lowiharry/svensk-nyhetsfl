@@ -91,8 +91,13 @@ export default function ArticleDetail() {
         },
       });
       if (error) {
-        const context = typeof error.context === 'object' && error.context !== null ? error.context as { error?: string } : null;
-        throw new Error(context?.error || error.message || 'Failed to share to Facebook');
+        let message = error.message || 'Failed to share to Facebook';
+        const context = 'context' in error ? (error as { context?: unknown }).context : null;
+        if (context instanceof Response) {
+          const payload = await context.clone().json().catch(() => null);
+          if (payload && typeof payload.error === 'string') message = payload.error;
+        }
+        throw new Error(message);
       }
       if (data?.error) {
         throw new Error(typeof data.error === 'string' ? data.error : 'Failed to share');
