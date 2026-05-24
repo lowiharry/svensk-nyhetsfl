@@ -90,7 +90,15 @@ export default function ArticleDetail() {
           imageUrl: article.image_url || null,
         },
       });
-      if (error) throw error;
+      if (error) {
+        let message = error.message || 'Failed to share to Facebook';
+        const context = 'context' in error ? (error as { context?: unknown }).context : null;
+        if (context instanceof Response) {
+          const payload = await context.clone().json().catch(() => null);
+          if (payload && typeof payload.error === 'string') message = payload.error;
+        }
+        throw new Error(message);
+      }
       if (data?.error) {
         throw new Error(typeof data.error === 'string' ? data.error : 'Failed to share');
       }
