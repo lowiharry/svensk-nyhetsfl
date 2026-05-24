@@ -9,3 +9,8 @@
   to = "https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/sitemap/news-sitemap.xml"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
