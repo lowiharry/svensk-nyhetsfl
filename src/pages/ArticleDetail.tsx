@@ -82,12 +82,6 @@ export default function ArticleDetail() {
   const shareToFacebookMutation = useMutation({
     mutationFn: async () => {
       if (!article) throw new Error('No article');
-      let token = localStorage.getItem('admin_share_token');
-      if (!token) {
-        token = window.prompt('Enter admin token to post to Facebook:') || '';
-        if (!token) throw new Error('Admin token required');
-        localStorage.setItem('admin_share_token', token);
-      }
       const link = `https://swedenupdate.com/article/${encodeURIComponent(article.source_url)}`;
       const { data, error } = await supabase.functions.invoke('share-to-facebook', {
         body: {
@@ -95,13 +89,9 @@ export default function ArticleDetail() {
           link,
           imageUrl: article.image_url || null,
         },
-        headers: { 'x-admin-token': token },
       });
       if (error) throw error;
       if (data?.error) {
-        if (data.error === 'Unauthorized') {
-          localStorage.removeItem('admin_share_token');
-        }
         throw new Error(typeof data.error === 'string' ? data.error : 'Failed to share');
       }
       return data;
