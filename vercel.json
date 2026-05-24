@@ -8,5 +8,10 @@
       "source": "/news-sitemap.xml",
       "destination": "https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/sitemap/news-sitemap.xml"
     }
+    ,
+    {
+      "source": "/((?!.*\\.).*)",
+      "destination": "/index.html"
+    }
   ]
 }
