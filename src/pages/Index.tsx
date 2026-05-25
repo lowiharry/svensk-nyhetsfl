@@ -268,6 +268,9 @@ const Index = () => {
           </>
         )}
 
+        {/* Soro Blog Embed */}
+        <div id="soro-blog" className="mb-6"></div>
+
         {/* Ad Unit */}
         <div className="my-8">
           <AdSense adSlot="8394432048" className="w-full" />
