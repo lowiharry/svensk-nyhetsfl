@@ -152,6 +152,9 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Soro Blog Embed */}
+        <div id="soro-blog" className="mb-6"></div>
+
         {/* SEO Heading - Hidden visually but important for SEO */}
         <h1 className="sr-only">
           Breaking News Sweden Today - Latest Swedish News Headlines and Live Updates
