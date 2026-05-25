@@ -47,6 +47,22 @@ const Index = () => {
     setAllArticles([]);
   }, [searchQuery, selectedCategory]);
 
+  // Load Soro blog embed script
+  useEffect(() => {
+    const existing = document.getElementById('soro-script') as HTMLScriptElement | null;
+    if (existing) return;
+
+    const script = document.createElement('script');
+    script.id = 'soro-script';
+    script.src = 'https://app.trysoro.com/api/embed/a3cbb930-523a-4c15-9fab-d8d98d008214?theme=dark';
+    script.defer = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Do not remove on unmount to keep embed alive during React re-renders
+    };
+  }, []);
+
   // Fetch articles - only non-expired ones
   const { data: articles = [], isLoading, isFetching } = useQuery({
     queryKey: ['articles', searchQuery, selectedCategory, page],
@@ -135,6 +151,9 @@ const Index = () => {
             <FetchNewsButton />
           </div>
         </div>
+
+        {/* Soro Blog Embed */}
+        <div id="soro-blog" className="mb-6"></div>
 
         {/* SEO Heading - Hidden visually but important for SEO */}
         <h1 className="sr-only">
