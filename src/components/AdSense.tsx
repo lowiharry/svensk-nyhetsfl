@@ -30,10 +30,10 @@ const AdSense = ({
   }, []);
 
   return (
-    <div className={className}>
+    <div className={className} style={{ minHeight: 100 }}>
       <ins
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{ display: 'block', minHeight: 100 }}
         data-ad-client="ca-pub-3000410248339228"
         data-ad-slot={adSlot}
         data-ad-format={adFormat}

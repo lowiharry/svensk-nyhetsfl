@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -35,10 +36,16 @@ interface NewsCardProps {
   article: Article;
 }
 
-export const NewsCard = ({ article }: NewsCardProps) => {
+const NewsCardComponent = ({ article }: NewsCardProps) => {
   const { toast } = useToast();
 
   const articleUrl = `/article/${encodeURIComponent(article.source_url)}`;
+  // Stable alt tag per article (avoid layout/hydration churn from Math.random on each render)
+  const altTag = useMemo(() => {
+    let hash = 0;
+    for (let i = 0; i < article.id.length; i++) hash = (hash * 31 + article.id.charCodeAt(i)) | 0;
+    return SEO_ALT_TAGS[Math.abs(hash) % SEO_ALT_TAGS.length];
+  }, [article.id]);
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}${articleUrl}`;
@@ -108,9 +115,12 @@ export const NewsCard = ({ article }: NewsCardProps) => {
           </div>
           <img 
             src={article.image_url || swedenFlag} 
-            alt={`${getRandomAltTag()} - ${article.title}`}
-            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
+            alt={`${altTag} - ${article.title}`}
+            width={96}
+            height={96}
+            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0 bg-muted"
             loading="lazy"
+            decoding="async"
             onError={(e) => {
               e.currentTarget.src = swedenFlag;
             }}
@@ -159,3 +169,5 @@ export const NewsCard = ({ article }: NewsCardProps) => {
     </Card>
   );
 };
+
+export const NewsCard = memo(NewsCardComponent);

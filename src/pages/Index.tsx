@@ -32,11 +32,11 @@ const Index = () => {
 
   const ARTICLES_PER_PAGE = 20;
 
-  // Auto-fetch news every 60 seconds
+  // Auto-fetch news every 5 minutes (reduces background CPU/network)
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchNews(false); // Don't show toast for automatic fetch
-    }, 60000); // 60 seconds
+      fetchNews(false);
+    }, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, [fetchNews]);
@@ -94,7 +94,8 @@ const Index = () => {
       
       return data as Article[];
     },
-    refetchInterval: page === 1 ? 1000 : false, // Only auto-refresh first page
+    refetchInterval: page === 1 ? 60_000 : false, // Refresh first page every 60s
+    staleTime: 30_000,
   });
 
   // Update all articles when new data arrives
