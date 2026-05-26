@@ -209,6 +209,16 @@ serve(async (req) => {
       
       console.log(`Successfully translated ${translatedArticles.length} articles`)
       
+      // Detect which articles are new (not yet in DB) so we only auto-post once
+      const candidateUrls = translatedArticles.map((a: any) => a.source_url)
+      const { data: existingRows } = await supabaseClient
+        .from('articles')
+        .select('source_url')
+        .in('source_url', candidateUrls)
+      const existingUrlSet = new Set((existingRows || []).map((r: any) => r.source_url))
+      const newArticles = translatedArticles.filter((a: any) => !existingUrlSet.has(a.source_url))
+      console.log(`New articles to auto-post to Facebook: ${newArticles.length}`)
+
       const { data, error } = await supabaseClient
         .from('articles')
         .upsert(translatedArticles, { onConflict: 'source_url' })
@@ -219,6 +229,33 @@ serve(async (req) => {
       }
 
       console.log(`Successfully upserted ${translatedArticles.length} translated articles`)
+
+      // Auto-post new articles to Facebook in the background
+      const autoPostToFacebook = async () => {
+        for (const article of newArticles) {
+          try {
+            const link = `https://swedenupdate.com/article/${encodeURIComponent(article.source_url)}`
+            const { error: fbError } = await supabaseClient.functions.invoke('share-to-facebook', {
+              body: {
+                title: article.title,
+                link,
+                imageUrl: article.image_url || null,
+              },
+            })
+            if (fbError) {
+              console.error(`Facebook post failed for ${article.source_url}:`, fbError)
+            } else {
+              console.log(`Posted to Facebook: ${article.source_url}`)
+            }
+          } catch (err) {
+            console.error(`Error posting to Facebook for ${article.source_url}:`, err)
+          }
+          // Delay between posts to respect Facebook rate limits
+          await new Promise((resolve) => setTimeout(resolve, 2000))
+        }
+        console.log('Facebook auto-post batch complete')
+      }
+      EdgeRuntime.waitUntil(autoPostToFacebook())
       
       // Enrich new articles in the background with rate limiting
       const enrichArticles = async () => {

@@ -459,20 +459,7 @@ export default function ArticleDetail() {
               Share Article
             </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => shareToFacebookMutation.mutate()}
-              disabled={shareToFacebookMutation.isPending}
-              className="flex items-center gap-2"
-            >
-              {shareToFacebookMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Facebook className="w-4 h-4" />
-              )}
-              Post to Facebook
-            </Button>
-            
+
             {!article.ai_enriched_at && (
               <Button
                 variant="outline"
