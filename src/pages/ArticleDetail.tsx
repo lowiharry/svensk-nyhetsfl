@@ -371,15 +371,24 @@ export default function ArticleDetail() {
             </div>
           </div>
 
-          {/* Image */}
-          <img 
-            src={article.image_url || swedenFlag} 
-            alt={`${getRandomAltTag()} - ${article.title}`}
-            className="w-full rounded-lg shadow-lg"
-            onError={(e) => {
-              e.currentTarget.src = swedenFlag;
-            }}
-          />
+          {/* Image - aspect-ratio reserves space to prevent CLS */}
+          <div
+            className="w-full overflow-hidden rounded-lg shadow-lg bg-muted"
+            style={{ aspectRatio: '16 / 9' }}
+          >
+            <img
+              src={article.image_url || swedenFlag}
+              alt={`${getRandomAltTag()} - ${article.title}`}
+              width={1280}
+              height={720}
+              decoding="async"
+              loading="eager"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = swedenFlag;
+              }}
+            />
+          </div>
 
           {/* Summary */}
           {article.summary && (
