@@ -12,6 +12,8 @@ interface AdSenseProps {
   adLayoutKey?: string;
   fullWidthResponsive?: boolean;
   className?: string;
+  /** Reserved height in px to prevent CLS. Defaults based on adFormat. */
+  reservedHeight?: number;
 }
 
 const AdSense = ({ 
@@ -19,7 +21,8 @@ const AdSense = ({
   adFormat = "auto",
   adLayoutKey,
   fullWidthResponsive = true,
-  className = ""
+  className = "",
+  reservedHeight,
 }: AdSenseProps) => {
   useEffect(() => {
     try {
@@ -29,11 +32,16 @@ const AdSense = ({
     }
   }, []);
 
+  // Reserve vertical space up-front so the ad slot doesn't shift layout when it loads.
+  const minHeight =
+    reservedHeight ??
+    (adFormat === 'fluid' ? 200 : adFormat === 'horizontal' ? 90 : 280);
+
   return (
-    <div className={className} style={{ minHeight: 100 }}>
+    <div className={className} style={{ minHeight, contain: 'layout' }}>
       <ins
         className="adsbygoogle"
-        style={{ display: 'block', minHeight: 100 }}
+        style={{ display: 'block', minHeight, width: '100%' }}
         data-ad-client="ca-pub-3000410248339228"
         data-ad-slot={adSlot}
         data-ad-format={adFormat}
