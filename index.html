@@ -49,20 +49,35 @@
     
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3000410248339228" crossorigin="anonymous"></script>
-    
-    <!-- Ezoic Analytics -->
-    <script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
-    <script>
-        window.ezstandalone = window.ezstandalone || {};
-        ezstandalone.cmd = ezstandalone.cmd || [];
-    </script>
-    <script src="//ezoicanalytics.com/analytics.js"></script>
-    
-    <script src="https://quge5.com/88/tag.min.js" data-zone="241894" async data-cfasync="false"></script>
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- Deferred third-party scripts: load after main content to improve LCP/INP -->
+    <script>
+      window.ezstandalone = window.ezstandalone || {};
+      ezstandalone.cmd = ezstandalone.cmd || [];
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          var s1 = document.createElement('script');
+          s1.src = 'https://www.ezojs.com/ezoic/sa.min.js';
+          s1.async = true;
+          document.body.appendChild(s1);
+
+          var s2 = document.createElement('script');
+          s2.src = 'https://ezoicanalytics.com/analytics.js';
+          s2.async = true;
+          document.body.appendChild(s2);
+
+          var s3 = document.createElement('script');
+          s3.src = 'https://quge5.com/88/tag.min.js';
+          s3.setAttribute('data-zone', '241894');
+          s3.setAttribute('data-cfasync', 'false');
+          s3.async = true;
+          document.body.appendChild(s3);
+        }, 1500);
+      });
+    </script>
   </body>
 </html>
