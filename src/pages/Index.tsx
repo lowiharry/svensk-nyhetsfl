@@ -230,12 +230,12 @@ const Index = () => {
               {allArticles.map((article, index) => (
                 <React.Fragment key={article.id}>
                   <NewsCard article={article} />
-                  {/* Insert in-feed ad after every 2 articles */}
-                  {(index + 1) % 2 === 0 && (
+                  {/* Insert in-feed ad after every 3 articles */}
+                  {(index + 1) % 3 === 0 && (
                     <div className="sm:col-span-2 xl:col-span-3 2xl:col-span-4">
-                      <AdSense 
-                        adSlot="9759678125" 
-                        adFormat="fluid" 
+                      <AdSense
+                        adSlot="9759678125"
+                        adFormat="fluid"
                         adLayoutKey="-gc-2a-1a-6o+yu"
                         className="w-full my-2"
                       />
