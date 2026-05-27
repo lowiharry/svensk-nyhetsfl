@@ -269,8 +269,12 @@ const Index = () => {
           </>
         )}
 
-        {/* Soro Blog Embed */}
-        <div id="soro-blog" className="mb-6"></div>
+        {/* Soro Blog Embed - reserve height to prevent CLS */}
+        <div
+          id="soro-blog"
+          className="mb-6 w-full bg-muted/30 rounded-lg"
+          style={{ minHeight: 400, contain: 'layout' }}
+        ></div>
 
         {/* Ad Unit */}
         <div className="my-8">
