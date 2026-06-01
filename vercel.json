@@ -1,6 +1,17 @@
 {
   "rewrites": [
     {
+      "source": "/((?!sitemap\\.xml|news-sitemap\\.xml|robots\\.txt|favicon\\.png|assets/.*|.*\\.[a-zA-Z0-9]+$).*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(googlebot|bingbot|yandex|duckduckbot|baiduspider|slurp|facebookexternalhit|facebot|twitterbot|linkedinbot|whatsapp|telegrambot|slackbot|discordbot|applebot|petalbot|google-inspectiontool|googleother|chrome-lighthouse|adsbot-google|mediapartners-google|google-extended).*"
+        }
+      ],
+      "destination": "https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/prerender?path=/$1"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/sitemap"
     },

@@ -15,3 +15,6 @@ verify_jwt = false
 
 [functions.share-to-facebook]
 verify_jwt = false
+
+[functions.prerender]
+verify_jwt = false
