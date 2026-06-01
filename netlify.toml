@@ -10,6 +10,14 @@
   status = 200
   force = true
 
+# Prerender for bots/crawlers — serve fully-rendered HTML with meta + content.
+[[redirects]]
+  from = "/*"
+  to = "https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/prerender?path=/:splat"
+  status = 200
+  force = true
+  conditions = {User-Agent = ["Googlebot","Bingbot","Yandex","DuckDuckBot","Baiduspider","Slurp","facebookexternalhit","facebot","Twitterbot","LinkedInBot","WhatsApp","TelegramBot","Slackbot","Discordbot","Applebot","PetalBot","Google-InspectionTool","GoogleOther","AdsBot-Google","Mediapartners-Google"]}
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
