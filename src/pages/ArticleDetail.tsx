@@ -10,7 +10,6 @@ import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import AdSense from '@/components/AdSense';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -396,14 +395,6 @@ export default function ArticleDetail() {
               {stripHtml(article.summary)}
             </div>
           )}
-
-          {/* Ad Unit after summary */}
-          <AdSense 
-            adSlot="9759678125" 
-            adFormat="fluid" 
-            adLayoutKey="-gc-2a-1a-6o+yu"
-            className="w-full my-4"
-          />
           {article.content && (
             <div className="prose prose-lg max-w-none">
               {stripHtml(article.content)}
@@ -492,11 +483,6 @@ export default function ArticleDetail() {
               <ExternalLink className="w-4 h-4" />
               Read Original
             </Button>
-          </div>
-
-          {/* Bottom Ad Unit */}
-          <div className="mt-8">
-            <AdSense adSlot="8394432048" className="w-full" />
           </div>
         </article>
       </div>
