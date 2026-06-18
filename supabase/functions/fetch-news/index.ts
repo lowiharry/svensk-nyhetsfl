@@ -92,9 +92,9 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const deeplApiKey = Deno.env.get('DEEPL_API_KEY')
-    if (!deeplApiKey) {
-      console.error('DEEPL_API_KEY not configured')
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
+    if (!lovableApiKey) {
+      console.error('LOVABLE_API_KEY not configured')
       throw new Error('Translation service not configured')
     }
 
@@ -198,12 +198,12 @@ serve(async (req) => {
       
       for (let i = 0; i < uniqueArticles.length; i++) {
         console.log(`Translating article ${i + 1}/${uniqueArticles.length}`)
-        const translated = await translateArticle(uniqueArticles[i], deeplApiKey)
+        const translated = await translateArticle(uniqueArticles[i], lovableApiKey)
         translatedArticles.push(translated)
         
-        // Add delay between articles
+        // Small delay between articles to stay well under AI gateway rate limits
         if (i < uniqueArticles.length - 1) {
-          await delay(1000)
+          await delay(400)
         }
       }
       
