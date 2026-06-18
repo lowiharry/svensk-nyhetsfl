@@ -10,7 +10,6 @@ import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import AdSense from '@/components/AdSense';
 import {
   Breadcrumb,
   BreadcrumbItem,
