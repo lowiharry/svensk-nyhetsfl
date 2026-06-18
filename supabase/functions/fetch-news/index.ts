@@ -6,78 +6,78 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-let deeplDebugLogged = false
+// Helper function to add delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-// Function to translate text to English using DeepL API
-async function translateToEnglish(text: string, apiKey: string): Promise<string> {
-  if (!text || text.trim() === '') return text
+// Translate a Swedish article to English using Lovable AI (Gemini).
+// All three fields are translated in a single request via JSON output.
+async function translateArticle(article: any, apiKey: string): Promise<any> {
+  const title = (article.title ?? '').toString()
+  const summary = (article.summary ?? '').toString()
+  const content = (article.content ?? '').toString()
 
-  // DeepL uses different base URLs for Free vs Pro plans
-  // - Free keys typically end with ":fx" and must use api-free.deepl.com
-  // - Pro keys use api.deepl.com
-  const trimmedKey = apiKey.trim()
-  const baseUrl = trimmedKey.endsWith(':fx')
-    ? 'https://api-free.deepl.com'
-    : 'https://api.deepl.com'
+  if (!title && !summary && !content) return article
 
-  if (!deeplDebugLogged) {
-    deeplDebugLogged = true
-    console.log('DeepL debug:', {
-      baseUrl,
-      keySuffix: trimmedKey.slice(-3),
-      keyLength: trimmedKey.length,
-    })
+  const payload = {
+    model: 'google/gemini-2.5-flash',
+    messages: [
+      {
+        role: 'system',
+        content:
+          'You are a professional Swedish-to-English news translator. ' +
+          'Translate the provided fields from Swedish to natural, fluent English. ' +
+          'Preserve meaning, names, numbers, and quotations exactly. Do not add commentary, ' +
+          'do not summarize, do not omit content. If a field is already in English, return it unchanged. ' +
+          'Return ONLY a JSON object with keys "title", "summary", "content" — all strings.',
+      },
+      {
+        role: 'user',
+        content: JSON.stringify({ title, summary, content }),
+      },
+    ],
+    response_format: { type: 'json_object' },
   }
 
   try {
-    const body = new URLSearchParams({
-      text,
-      target_lang: 'EN',
-    })
-
-    const response = await fetch(`${baseUrl}/v2/translate`, {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `DeepL-Auth-Key ${apiKey}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
       },
-      body,
+      body: JSON.stringify(payload),
     })
 
     if (!response.ok) {
       const errText = await response.text().catch(() => '')
-      console.error('DeepL Translation API error:', response.status, errText)
-      return text // Return original on error
+      console.error('Lovable AI translation error:', response.status, errText)
+      if (response.status === 429) {
+        // Back off briefly on rate limit and let caller retry next cycle
+        await delay(2000)
+      }
+      return article // Return original on error
     }
 
     const data = await response.json()
-    const translatedText = data.translations?.[0]?.text?.trim()
-    return translatedText || text
+    const raw = data?.choices?.[0]?.message?.content ?? ''
+    let parsed: any = {}
+    try {
+      parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
+    } catch (_e) {
+      // Try to extract JSON object from the response
+      const match = typeof raw === 'string' ? raw.match(/\{[\s\S]*\}/) : null
+      parsed = match ? JSON.parse(match[0]) : {}
+    }
+
+    return {
+      ...article,
+      title: (parsed.title || title).toString().trim(),
+      summary: (parsed.summary || summary).toString().trim(),
+      content: (parsed.content || content).toString().trim(),
+    }
   } catch (error) {
-    console.error('DeepL Translation error:', error)
-    return text // Return original on error
-  }
-}
-
-// Helper function to add delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
-// Function to translate an article object - sequential to avoid rate limits
-async function translateArticle(article: any, apiKey: string): Promise<any> {
-  // Translate sequentially with delays to avoid rate limits
-  const translatedTitle = await translateToEnglish(article.title, apiKey)
-  await delay(500) // 500ms between requests
-  
-  const translatedSummary = await translateToEnglish(article.summary, apiKey)
-  await delay(500)
-  
-  const translatedContent = await translateToEnglish(article.content, apiKey)
-
-  return {
-    ...article,
-    title: translatedTitle,
-    summary: translatedSummary,
-    content: translatedContent,
+    console.error('Lovable AI translation exception:', error)
+    return article
   }
 }
 
