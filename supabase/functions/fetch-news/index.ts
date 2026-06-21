@@ -9,6 +9,9 @@ const corsHeaders = {
 // Helper function to add delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
+// Translation toggle: set to true to re-enable English translations
+const TRANSLATION_ENABLED = false
+
 // Translate a Swedish article to English using Lovable AI (Gemini).
 // All three fields are translated in a single request via JSON output.
 async function translateArticle(article: any, apiKey: string): Promise<any> {
