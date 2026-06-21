@@ -9,6 +9,9 @@ const corsHeaders = {
 // Helper function to add delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
+// Translation toggle: set to true to re-enable English translations
+const TRANSLATION_ENABLED = false
+
 // Translate a Swedish article to English using Lovable AI (Gemini).
 // All three fields are translated in a single request via JSON output.
 async function translateArticle(article: any, apiKey: string): Promise<any> {
@@ -93,7 +96,7 @@ serve(async (req) => {
     )
 
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
-    if (!lovableApiKey) {
+    if (TRANSLATION_ENABLED && !lovableApiKey) {
       console.error('LOVABLE_API_KEY not configured')
       throw new Error('Translation service not configured')
     }
@@ -109,7 +112,7 @@ serve(async (req) => {
       { name: 'DN Ekonomi', url: 'https://www.dn.se/ekonomi/rss/', category: 'business' }
     ]
 
-    console.log('Starting Swedish news fetch with English translation...')
+    console.log('Starting Swedish news fetch (translation currently paused)...')
 
     const allArticles = []
 
@@ -192,22 +195,28 @@ serve(async (req) => {
       
       console.log(`Unique articles after deduplication: ${uniqueArticles.length}`)
       
-      // Translate articles to English - process sequentially to avoid rate limits
-      console.log('Starting translation to English (sequential to avoid rate limits)...')
-      const translatedArticles = []
-      
-      for (let i = 0; i < uniqueArticles.length; i++) {
-        console.log(`Translating article ${i + 1}/${uniqueArticles.length}`)
-        const translated = await translateArticle(uniqueArticles[i], lovableApiKey)
-        translatedArticles.push(translated)
+      // Translation to English is currently paused; keep original Swedish text.
+      let translatedArticles: any[] = []
+
+      if (TRANSLATION_ENABLED) {
+        console.log('Starting translation to English (sequential to avoid rate limits)...')
         
-        // Small delay between articles to stay well under AI gateway rate limits
-        if (i < uniqueArticles.length - 1) {
-          await delay(400)
+        for (let i = 0; i < uniqueArticles.length; i++) {
+          console.log(`Translating article ${i + 1}/${uniqueArticles.length}`)
+          const translated = await translateArticle(uniqueArticles[i], lovableApiKey)
+          translatedArticles.push(translated)
+          
+          // Small delay between articles to stay well under AI gateway rate limits
+          if (i < uniqueArticles.length - 1) {
+            await delay(400)
+          }
         }
+        
+        console.log(`Successfully translated ${translatedArticles.length} articles`)
+      } else {
+        console.log('Translation to English is paused; storing original Swedish content.')
+        translatedArticles = uniqueArticles
       }
-      
-      console.log(`Successfully translated ${translatedArticles.length} articles`)
       
       // Detect which articles are new (not yet in DB) so we only auto-post once
       const candidateUrls = translatedArticles.map((a: any) => a.source_url)
