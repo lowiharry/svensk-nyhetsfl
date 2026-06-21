@@ -195,22 +195,28 @@ serve(async (req) => {
       
       console.log(`Unique articles after deduplication: ${uniqueArticles.length}`)
       
-      // Translate articles to English - process sequentially to avoid rate limits
-      console.log('Starting translation to English (sequential to avoid rate limits)...')
-      const translatedArticles = []
-      
-      for (let i = 0; i < uniqueArticles.length; i++) {
-        console.log(`Translating article ${i + 1}/${uniqueArticles.length}`)
-        const translated = await translateArticle(uniqueArticles[i], lovableApiKey)
-        translatedArticles.push(translated)
+      // Translation to English is currently paused; keep original Swedish text.
+      let translatedArticles: any[] = []
+
+      if (TRANSLATION_ENABLED) {
+        console.log('Starting translation to English (sequential to avoid rate limits)...')
         
-        // Small delay between articles to stay well under AI gateway rate limits
-        if (i < uniqueArticles.length - 1) {
-          await delay(400)
+        for (let i = 0; i < uniqueArticles.length; i++) {
+          console.log(`Translating article ${i + 1}/${uniqueArticles.length}`)
+          const translated = await translateArticle(uniqueArticles[i], lovableApiKey)
+          translatedArticles.push(translated)
+          
+          // Small delay between articles to stay well under AI gateway rate limits
+          if (i < uniqueArticles.length - 1) {
+            await delay(400)
+          }
         }
+        
+        console.log(`Successfully translated ${translatedArticles.length} articles`)
+      } else {
+        console.log('Translation to English is paused; storing original Swedish content.')
+        translatedArticles = uniqueArticles
       }
-      
-      console.log(`Successfully translated ${translatedArticles.length} articles`)
       
       // Detect which articles are new (not yet in DB) so we only auto-post once
       const candidateUrls = translatedArticles.map((a: any) => a.source_url)
