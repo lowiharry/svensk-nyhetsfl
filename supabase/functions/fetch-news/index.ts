@@ -112,7 +112,7 @@ serve(async (req) => {
       { name: 'DN Ekonomi', url: 'https://www.dn.se/ekonomi/rss/', category: 'business' }
     ]
 
-    console.log('Starting Swedish news fetch with English translation...')
+    console.log('Starting Swedish news fetch (translation currently paused)...')
 
     const allArticles = []
 
