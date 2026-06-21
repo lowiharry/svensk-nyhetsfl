@@ -96,7 +96,7 @@ serve(async (req) => {
     )
 
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
-    if (!lovableApiKey) {
+    if (TRANSLATION_ENABLED && !lovableApiKey) {
       console.error('LOVABLE_API_KEY not configured')
       throw new Error('Translation service not configured')
     }
