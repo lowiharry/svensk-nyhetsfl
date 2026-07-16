@@ -18,3 +18,7 @@ verify_jwt = false
 
 [functions.prerender]
 verify_jwt = false
+
+[functions.featured-scheduler]
+verify_jwt = false
+schedule = "* * * * *"
