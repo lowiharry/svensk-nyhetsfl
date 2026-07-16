@@ -124,8 +124,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Sweden News Today - Breaking News Sweden | Latest Swedish Headlines</title>
-        <meta name="description" content="Breaking news Sweden today - Get latest Swedish news, live updates, top stories, Sweden politics, economy, weather alerts, crime reports from Stockholm, Gothenburg, Malmö, Uppsala. Your trusted source for Swedish daily news." />
+        <title>Sweden Update - Breaking News & Latest Swedish Headlines</title>
+        <meta name="description" content="Get the latest breaking news Sweden and Swedish headlines, live updates, politics, economy, weather and crime." />
         <meta name="keywords" content="Sweden news, Swedish news today, breaking news Sweden, latest news Sweden, Sweden live updates, Sweden headlines, Swedish daily news, Sweden top stories, Sweden current events, Sweden breaking stories" />
         <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <link rel="canonical" href="https://swedenupdate.com/" />
