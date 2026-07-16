@@ -147,7 +147,7 @@ const Index = () => {
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-sm font-medium">Live Updates</span>
             </div>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-foreground">
               {allArticles.length} articles loaded
             </span>
           </div>
