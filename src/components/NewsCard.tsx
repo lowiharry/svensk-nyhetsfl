@@ -78,16 +78,16 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
     }
   };
 
-  const getSourceColor = (source: string) => {
-    const colors = {
-      'Aftonbladet': 'bg-red-500',
-      'Expressen': 'bg-blue-500',
-      'Dagens Nyheter': 'bg-gray-700',
-      'Svenska Dagbladet': 'bg-blue-600',
-      'Göteborgs-Posten': 'bg-green-600',
-      'SVT': 'bg-blue-700'
+  const getSourceBadgeClasses = (source: string) => {
+    const styles = {
+      'Aftonbladet': 'bg-red-500 text-secondary-foreground',
+      'Expressen': 'bg-blue-500 text-secondary-foreground',
+      'Dagens Nyheter': 'bg-gray-700 text-primary-foreground',
+      'Svenska Dagbladet': 'bg-blue-600 text-primary-foreground',
+      'Göteborgs-Posten': 'bg-green-600 text-secondary-foreground',
+      'SVT': 'bg-blue-700 text-primary-foreground'
     };
-    return colors[source as keyof typeof colors] || 'bg-primary';
+    return styles[source as keyof typeof styles] || 'bg-primary text-primary-foreground';
   };
 
   return (
@@ -96,7 +96,7 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
         <div className="flex justify-between items-start gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <Badge className={`${getSourceColor(article.source_name)} text-white text-xs px-2 py-1`}>
+              <Badge className={`${getSourceBadgeClasses(article.source_name)} text-xs px-2 py-1`}>
                 {article.source_name}
               </Badge>
               <Badge variant="outline" className="capitalize text-xs px-2 py-1">
