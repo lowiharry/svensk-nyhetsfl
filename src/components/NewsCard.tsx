@@ -78,16 +78,16 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
     }
   };
 
-  const getSourceColor = (source: string) => {
-    const colors = {
-      'Aftonbladet': 'bg-red-500',
-      'Expressen': 'bg-blue-500',
-      'Dagens Nyheter': 'bg-gray-700',
-      'Svenska Dagbladet': 'bg-blue-600',
-      'Göteborgs-Posten': 'bg-green-600',
-      'SVT': 'bg-blue-700'
+  const getSourceBadgeClasses = (source: string) => {
+    const styles = {
+      'Aftonbladet': 'bg-red-500 text-secondary-foreground',
+      'Expressen': 'bg-blue-500 text-secondary-foreground',
+      'Dagens Nyheter': 'bg-gray-700 text-primary-foreground',
+      'Svenska Dagbladet': 'bg-blue-600 text-primary-foreground',
+      'Göteborgs-Posten': 'bg-green-600 text-secondary-foreground',
+      'SVT': 'bg-blue-700 text-primary-foreground'
     };
-    return colors[source as keyof typeof colors] || 'bg-primary';
+    return styles[source as keyof typeof styles] || 'bg-primary text-primary-foreground';
   };
 
   return (
