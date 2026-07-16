@@ -238,7 +238,7 @@ export default function ArticleDetail() {
     "@type": "NewsArticle",
     "headline": article.title,
     "description": articleDescription,
-    "image": article.image_url || undefined,
+    "image": article.image_url || "https://swedenupdate.com/og-image.jpg",
     "datePublished": article.published_at,
     "dateModified": article.updated_at,
     "keywords": seoKeywords,
@@ -304,7 +304,7 @@ export default function ArticleDetail() {
         <meta property="og:description" content={articleDescription} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={canonicalUrl} />
-        {article.image_url && <meta property="og:image" content={article.image_url} />}
+        <meta property="og:image" content={article.image_url || "https://swedenupdate.com/og-image.jpg"} />
         <meta property="article:published_time" content={article.published_at} />
         <meta property="article:section" content={article.category || 'News'} />
         <meta property="article:tag" content="Sweden news" />
@@ -313,7 +313,7 @@ export default function ArticleDetail() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={article.title} />
         <meta name="twitter:description" content={articleDescription} />
-        {article.image_url && <meta name="twitter:image" content={article.image_url} />}
+        <meta name="twitter:image" content={article.image_url || "https://swedenupdate.com/og-image.jpg"} />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
