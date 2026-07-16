@@ -19,6 +19,16 @@ const Contact = () => {
         <meta property="og:url" content="https://swedenupdate.com/contact" />
         <meta name="twitter:title" content="Contact Sweden Update - Questions & Feedback" />
         <meta name="twitter:description" content="Contact Sweden Update for inquiries about Swedish news, partnerships, feedback and live updates." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://swedenupdate.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://swedenupdate.com/contact" }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="container max-w-4xl mx-auto px-4 py-8">

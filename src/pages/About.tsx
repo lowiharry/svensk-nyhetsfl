@@ -18,6 +18,16 @@ const About = () => {
         <meta property="og:url" content="https://swedenupdate.com/about" />
         <meta name="twitter:title" content="About Sweden Update - Trusted Swedish News Source" />
         <meta name="twitter:description" content="Learn about Sweden Update, your trusted source for breaking news Sweden, latest Swedish headlines, politics, economy, weather and crime." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://swedenupdate.com/" },
+              { "@type": "ListItem", "position": 2, "name": "About", "item": "https://swedenupdate.com/about" }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="container max-w-4xl mx-auto px-4 py-8">
