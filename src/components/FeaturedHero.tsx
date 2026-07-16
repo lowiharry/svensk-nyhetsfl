@@ -31,38 +31,34 @@ type FeaturedRow = {
   article: Article | null;
 };
 
-async function fetchActiveFeatured(): Promise<FeaturedRow | null> {
+async function fetchScheduledFeatured(): Promise<FeaturedRow[]> {
   const nowIso = new Date().toISOString();
-  // Prefer the most recent slot whose time has already passed
+  // All scheduled slots for today (past + upcoming), earliest slot first
   const { data, error } = await supabase
     .from('featured_schedule')
     .select('id, slot_at, status, article:articles(id,title,summary,content,image_url,source_name,source_url,published_at,category)')
-    .lte('slot_at', nowIso)
-    .order('slot_at', { ascending: false })
-    .limit(1);
+    .order('slot_at', { ascending: true });
   if (error) {
     console.error('featured fetch error', error);
-    return null;
   }
-  const row = data?.[0] as unknown as FeaturedRow | undefined;
-  if (row?.article) return row;
+  const rows = ((data ?? []) as unknown as FeaturedRow[]).filter((r) => r.article);
+  if (rows.length > 0) return rows;
 
-  // Fallback: most recent active article (no schedule yet)
+  // Fallback: most recent active articles (no schedule yet)
   const { data: fallback } = await supabase
     .from('articles')
     .select('id,title,summary,content,image_url,source_name,source_url,published_at,category')
     .gt('expiry_at', nowIso)
     .not('image_url', 'is', null)
     .order('published_at', { ascending: false })
-    .limit(1);
-  const art = (fallback?.[0] as Article | undefined) ?? null;
-  if (!art) return null;
-  return {
+    .limit(10);
+  const arts = (fallback ?? []) as Article[];
+  return arts.map((art) => ({
     id: `fallback-${art.id}`,
     slot_at: art.published_at,
-    status: 'active',
+    status: 'active' as const,
     article: art,
-  };
+  }));
 }
 
 const statusStyles: Record<FeaturedRow['status'], string> = {
@@ -76,12 +72,28 @@ export const FeaturedHero = () => {
   const { toast } = useToast();
   const [, forceTick] = useState(0);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['featured-active'],
-    queryFn: fetchActiveFeatured,
+  const { data: rows, isLoading } = useQuery({
+    queryKey: ['featured-scheduled-list'],
+    queryFn: fetchScheduledFeatured,
     staleTime: 30_000,
     refetchInterval: 60_000,
   });
+
+  const [index, setIndex] = useState(0);
+
+  // Cycle through scheduled articles every 3s
+  useEffect(() => {
+    if (!rows || rows.length <= 1) return;
+    const t = setInterval(() => {
+      setIndex((i) => (i + 1) % rows.length);
+    }, 3000);
+    return () => clearInterval(t);
+  }, [rows]);
+
+  // Keep index in bounds when list length changes
+  useEffect(() => {
+    if (rows && index >= rows.length) setIndex(0);
+  }, [rows, index]);
 
   // Realtime: swap the hero the instant scheduler updates a row.
   useEffect(() => {
@@ -90,7 +102,7 @@ export const FeaturedHero = () => {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'featured_schedule' },
-        () => qc.invalidateQueries({ queryKey: ['featured-active'] }),
+        () => qc.invalidateQueries({ queryKey: ['featured-scheduled-list'] }),
       )
       .subscribe();
     return () => {
@@ -104,9 +116,10 @@ export const FeaturedHero = () => {
     return () => clearInterval(t);
   }, []);
 
-  const article = data?.article ?? null;
-  const status = data?.status ?? 'active';
-  const slotAt = data?.slot_at ?? null;
+  const current = rows && rows.length > 0 ? rows[Math.min(index, rows.length - 1)] : null;
+  const article = current?.article ?? null;
+  const status = current?.status ?? 'active';
+  const slotAt = current?.slot_at ?? null;
 
   const articleUrl = article ? `/article/${encodeURIComponent(article.source_url)}` : '#';
   const shareUrl = useMemo(
@@ -174,7 +187,7 @@ export const FeaturedHero = () => {
         })}</script>
       </Helmet>
 
-      <div className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px]">
+      <div key={current?.id ?? 'empty'} className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px] animate-fade-in">
         <img
           src={article.image_url || swedenFlag}
           alt={article.title}
