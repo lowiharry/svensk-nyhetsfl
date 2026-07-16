@@ -129,6 +129,11 @@ const Index = () => {
         <meta name="keywords" content="Sweden news, Swedish news today, breaking news Sweden, latest news Sweden, Sweden live updates, Sweden headlines, Swedish daily news, Sweden top stories, Sweden current events, Sweden breaking stories" />
         <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <link rel="canonical" href="https://swedenupdate.com/" />
+        <meta property="og:title" content="Sweden Update - Breaking News & Latest Swedish Headlines" />
+        <meta property="og:description" content="Get the latest breaking news Sweden and Swedish headlines, live updates, politics, economy, weather and crime." />
+        <meta property="og:url" content="https://swedenupdate.com/" />
+        <meta name="twitter:title" content="Sweden Update - Breaking News & Latest Swedish Headlines" />
+        <meta name="twitter:description" content="Get the latest breaking news Sweden and Swedish headlines, live updates, politics, economy, weather and crime." />
       </Helmet>
       <Header
         onSearch={setSearchQuery}

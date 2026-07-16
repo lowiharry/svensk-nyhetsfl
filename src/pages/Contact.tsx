@@ -14,6 +14,11 @@ const Contact = () => {
         <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://swedenupdate.com/contact" />
+        <meta property="og:title" content="Contact Sweden Update - Questions & Feedback" />
+        <meta property="og:description" content="Contact Sweden Update for inquiries about Swedish news, partnerships, feedback and live updates." />
+        <meta property="og:url" content="https://swedenupdate.com/contact" />
+        <meta name="twitter:title" content="Contact Sweden Update - Questions & Feedback" />
+        <meta name="twitter:description" content="Contact Sweden Update for inquiries about Swedish news, partnerships, feedback and live updates." />
       </Helmet>
 
       <div className="container max-w-4xl mx-auto px-4 py-8">

@@ -13,6 +13,11 @@ const PrivacyPolicy = () => {
         <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://swedenupdate.com/privacy-policy" />
+        <meta property="og:title" content="Privacy Policy - Sweden Update" />
+        <meta property="og:description" content="Sweden Update Privacy Policy - learn how we protect your data while bringing you breaking news Sweden and Swedish headlines." />
+        <meta property="og:url" content="https://swedenupdate.com/privacy-policy" />
+        <meta name="twitter:title" content="Privacy Policy - Sweden Update" />
+        <meta name="twitter:description" content="Sweden Update Privacy Policy - learn how we protect your data while bringing you breaking news Sweden and Swedish headlines." />
       </Helmet>
 
       <div className="container max-w-4xl mx-auto px-4 py-8">

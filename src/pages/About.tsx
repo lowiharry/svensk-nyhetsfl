@@ -13,6 +13,11 @@ const About = () => {
         <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://swedenupdate.com/about" />
+        <meta property="og:title" content="About Sweden Update - Trusted Swedish News Source" />
+        <meta property="og:description" content="Learn about Sweden Update, your trusted source for breaking news Sweden, latest Swedish headlines, politics, economy, weather and crime." />
+        <meta property="og:url" content="https://swedenupdate.com/about" />
+        <meta name="twitter:title" content="About Sweden Update - Trusted Swedish News Source" />
+        <meta name="twitter:description" content="Learn about Sweden Update, your trusted source for breaking news Sweden, latest Swedish headlines, politics, economy, weather and crime." />
       </Helmet>
 
       <div className="container max-w-4xl mx-auto px-4 py-8">
