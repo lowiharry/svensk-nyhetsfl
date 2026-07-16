@@ -18,7 +18,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import swedenFlag from '@/assets/sweden-flag.webp';
+import swedenFlag from '@/assets/article-fallback.jpg';
 
 const SEO_ALT_TAGS = [
   "Latest Sweden news update",
