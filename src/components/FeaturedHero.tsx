@@ -10,7 +10,7 @@ import { Clock, ExternalLink, Share2, Facebook, Twitter, Radio } from 'lucide-re
 import { formatDistanceToNow, format } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
-import swedenFlag from '@/assets/sweden-flag.webp';
+import swedenFlag from '@/assets/article-fallback.jpg';
 
 type Article = {
   id: string;

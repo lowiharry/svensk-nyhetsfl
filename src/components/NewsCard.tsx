@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { Link } from 'react-router-dom';
-import swedenFlag from '@/assets/sweden-flag.webp';
+import swedenFlag from '@/assets/article-fallback.jpg';
 
 const SEO_ALT_TAGS = [
   "Latest Sweden news update",
