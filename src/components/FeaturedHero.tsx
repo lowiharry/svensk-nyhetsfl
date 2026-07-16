@@ -192,6 +192,8 @@ export const FeaturedHero = () => {
           src={article.image_url || swedenFlag}
           alt={article.title}
           className="absolute inset-0 w-full h-full object-cover"
+          width="1200"
+          height="675"
           loading="eager"
           fetchPriority="high"
           decoding="async"
