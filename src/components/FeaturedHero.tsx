@@ -245,7 +245,7 @@ export const FeaturedHero = () => {
             <div className="mt-4 sm:mt-6 flex flex-wrap items-center gap-2 sm:gap-3">
               <Link to={articleUrl}>
                 <Button size="lg" className="font-semibold shadow-lg">
-                  Read More
+                  Read full article
                 </Button>
               </Link>
               <Button
