@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://svensk-nyhetsfl.lovable.app/sitemap.xml
