@@ -42,9 +42,9 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
             <span className="text-white font-bold text-xs sm:text-sm">🇸🇪</span>
           </div>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate">
+            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate">
               Sweden Update
-            </h1>
+            </span>
             <p className="text-xs text-muted-foreground hidden md:block">Latest Swedish News</p>
           </div>
         </Link>
@@ -106,6 +106,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
           <Button
             variant="outline"
             size="sm"
+            aria-label="Toggle dark mode"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="h-9 w-9 p-0"
           >
@@ -116,6 +117,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
           <Button
             variant="outline"
             size="sm"
+            aria-label="Open navigation menu"
             className="lg:hidden h-9 w-9 p-0"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
