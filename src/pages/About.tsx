@@ -82,6 +82,9 @@ const About = () => {
               For inquiries, feedback, or partnership opportunities, please visit our{' '}
               <Link to="/contact" className="text-primary hover:underline">
                 contact page
+              </Link>. New to the country? Read our{' '}
+              <Link to="/guides/moving-to-sweden" className="text-primary hover:underline">
+                Moving to Sweden guide for expats
               </Link>.
             </p>
           </section>
