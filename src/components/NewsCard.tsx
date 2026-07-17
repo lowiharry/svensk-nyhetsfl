@@ -80,14 +80,14 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
 
   const getSourceBadgeClasses = (source: string) => {
     const styles = {
-      'Aftonbladet': 'bg-red-500 text-secondary-foreground',
-      'Expressen': 'bg-blue-500 text-secondary-foreground',
-      'Dagens Nyheter': 'bg-gray-700 text-primary-foreground',
-      'Svenska Dagbladet': 'bg-blue-600 text-primary-foreground',
-      'Göteborgs-Posten': 'bg-green-600 text-secondary-foreground',
-      'SVT': 'bg-blue-700 text-primary-foreground'
+      'Aftonbladet': 'bg-red-600 text-white',
+      'Expressen': 'bg-blue-600 text-white',
+      'Dagens Nyheter': 'bg-gray-700 text-white',
+      'Svenska Dagbladet': 'bg-blue-700 text-white',
+      'Göteborgs-Posten': 'bg-green-700 text-white',
+      'SVT': 'bg-blue-800 text-white'
     };
-    return styles[source as keyof typeof styles] || 'bg-primary text-primary-foreground';
+    return styles[source as keyof typeof styles] || 'bg-primary text-white';
   };
 
   return (
