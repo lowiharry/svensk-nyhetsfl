@@ -117,6 +117,12 @@ serve(async (req) => {
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
+  <url>
+    <loc>${baseUrl}/guides/moving-to-sweden</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
   ${categories.map(category => `<url>
     <loc>${baseUrl}/category/${encodeURIComponent(category)}</loc>
     <lastmod>${currentDate}</lastmod>
