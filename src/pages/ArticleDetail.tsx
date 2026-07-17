@@ -33,6 +33,34 @@ const getRandomAltTag = () => {
   return SEO_ALT_TAGS[Math.floor(Math.random() * SEO_ALT_TAGS.length)];
 };
 
+function truncateAtWord(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  const sliced = text.slice(0, maxLength);
+  const lastSpace = sliced.lastIndexOf(' ');
+  if (lastSpace > 0) return sliced.slice(0, lastSpace);
+  return sliced;
+}
+
+function buildArticleTitle(title: string): string {
+  const suffix = ' | Sweden Update';
+  const cleanTitle = stripHtml(title).trim();
+  return truncateAtWord(cleanTitle, 60 - suffix.length) + suffix;
+}
+
+function buildArticleDescription(
+  summary: string | null | undefined,
+  title: string
+): string {
+  const base = stripHtml(summary || title || '').trim();
+  const suffix = ' | Sweden Update — latest Swedish news today.';
+  if (base.length >= 50 && base.length <= 160) return base;
+  if (base.length < 50) {
+    const combined = `${base}${suffix}`;
+    return combined.length > 160 ? base.slice(0, 160) : combined;
+  }
+  return truncateAtWord(base, 160);
+}
+
 export default function ArticleDetail() {
   const { sourceUrl } = useParams();
   const { toast } = useToast();
