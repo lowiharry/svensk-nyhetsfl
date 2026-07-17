@@ -79,7 +79,21 @@
   <meta name="twitter:title" content="Sweden Update - Breaking News & Latest Swedish Headlines">
   <meta property="og:description" content="Sweden Update - your trusted source for breaking news Sweden, latest Swedish headlines, politics, economy, weather and crime.">
   <meta name="twitter:description" content="Sweden Update - your trusted source for breaking news Sweden, latest Swedish headlines, politics, economy, weather and crime.">
-</head>
+
+    <!-- OneSignal Web Push SDK -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "201cb623-aec5-4215-b724-59ddbc3979a5",
+          allowLocalhostAsSecureOrigin: true,
+          serviceWorkerPath: "/OneSignalSDKWorker.js",
+          notifyButton: { enable: true },
+        });
+      });
+    </script>
+  </head>
 
   <body>
     <div id="root"></div>
