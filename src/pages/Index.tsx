@@ -9,6 +9,7 @@ import { FetchNewsButton } from '@/components/FetchNewsButton';
 import { BackToTop } from '@/components/BackToTop';
 import AdSense from '@/components/AdSense';
 import FeaturedHero from '@/components/FeaturedHero';
+import StockTicker from '@/components/StockTicker';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useFetchNews } from '@/hooks/use-fetch-news';
@@ -143,6 +144,9 @@ const Index = () => {
 
       {/* Featured News Schedule hero — rotates via cron every 2h (Stockholm slots) */}
       <FeaturedHero />
+
+      {/* Live Swedish stock ticker */}
+      <StockTicker />
 
       <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Status Bar */}
