@@ -153,7 +153,7 @@ export const FeaturedHero = () => {
   if (isLoading) {
     return (
       <section className="relative w-full">
-        <Skeleton className="w-full h-[280px] sm:h-[380px] md:h-[460px] lg:h-[520px] rounded-none" />
+        <Skeleton className="w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px] rounded-none" />
       </section>
     );
   }
