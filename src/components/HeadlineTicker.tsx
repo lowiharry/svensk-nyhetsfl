@@ -40,11 +40,11 @@ const HeadlineTicker = () => {
         <Link
           key={`${h.id}-${i}`}
           to={`/article/${encodeURIComponent(h.source_url)}`}
-          className="flex items-center gap-2 text-sm whitespace-nowrap hover:text-primary-foreground/80 transition-colors"
+          className="flex items-center gap-2 text-sm whitespace-nowrap hover:text-primary-foreground transition-colors"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground/70" />
+          <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
           <span className="font-medium">{h.title}</span>
-          <span className="text-primary-foreground/90 text-xs">— {h.source_name}</span>
+          <span className="text-primary-foreground text-xs">— {h.source_name}</span>
         </Link>
       ))}
     </div>
