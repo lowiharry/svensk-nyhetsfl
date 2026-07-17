@@ -31,7 +31,7 @@ const HeadlineTicker = () => {
   const headlines = data ?? [];
   if (headlines.length === 0) {
     // Reserve space to prevent layout shift while data loads
-    return <div className="w-full bg-white border-b" style={{ minHeight: 36 }} aria-hidden />;
+    return <div className="w-full bg-yellow-400 border-b" style={{ minHeight: 36 }} aria-hidden />;
   }
 
   const row = (
