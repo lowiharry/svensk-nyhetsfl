@@ -26,7 +26,9 @@ const FootballTicker = () => {
   });
 
   const matches = data ?? [];
-  if (matches.length === 0) return null;
+  if (matches.length === 0) {
+    return <div className="w-full border-b bg-muted/30" style={{ minHeight: 32 }} aria-hidden />;
+  }
 
   const row = (
     <div className="flex shrink-0 items-center gap-6 pr-6">
