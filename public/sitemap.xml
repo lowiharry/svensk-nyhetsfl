@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/sitemap</loc>
+    <loc>https://svensk-nyhetsfl.lovable.app/sitemap.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://bsrmueavzxvxkqvtrxcg.supabase.co/functions/v1/sitemap/news-sitemap.xml</loc>
+    <loc>https://svensk-nyhetsfl.lovable.app/news-sitemap.xml</loc>
   </sitemap>
 </sitemapindex>

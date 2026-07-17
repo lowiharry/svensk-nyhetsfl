@@ -21,7 +21,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     )
 
-    const baseUrl = 'https://swedenupdate.com'
+    const baseUrl = 'https://svensk-nyhetsfl.lovable.app'
     
     // Handle news sitemap (last 48 hours)
     if (pathname.includes('news-sitemap.xml')) {
@@ -116,6 +116,12 @@ serve(async (req) => {
     <lastmod>${currentDate}</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/guides/moving-to-sweden</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   ${categories.map(category => `<url>
     <loc>${baseUrl}/category/${encodeURIComponent(category)}</loc>
