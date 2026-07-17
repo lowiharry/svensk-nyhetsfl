@@ -180,12 +180,12 @@ export default function ArticleDetail() {
 
   const getSourceColor = (source: string) => {
     const colors = {
-      'Aftonbladet': 'bg-red-500',
-      'Expressen': 'bg-blue-500',
+      'Aftonbladet': 'bg-red-600',
+      'Expressen': 'bg-blue-600',
       'Dagens Nyheter': 'bg-gray-700',
-      'Svenska Dagbladet': 'bg-blue-600',
-      'Göteborgs-Posten': 'bg-green-600',
-      'SVT': 'bg-blue-700'
+      'Svenska Dagbladet': 'bg-blue-700',
+      'Göteborgs-Posten': 'bg-green-700',
+      'SVT': 'bg-blue-800'
     };
     return colors[source as keyof typeof colors] || 'bg-primary';
   };
