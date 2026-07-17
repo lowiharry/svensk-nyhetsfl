@@ -44,7 +44,7 @@ const HeadlineTicker = () => {
         >
           <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground/70" />
           <span className="font-medium">{h.title}</span>
-          <span className="opacity-70 text-xs">— {h.source_name}</span>
+          <span className="text-primary-foreground/90 text-xs">— {h.source_name}</span>
         </Link>
       ))}
     </div>
