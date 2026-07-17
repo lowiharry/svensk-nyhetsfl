@@ -93,7 +93,11 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
   return (
     <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
       <CardHeader className="pb-3 flex-shrink-0">
-        <div className="flex justify-between items-start gap-3">
+        <Link
+          to={articleUrl}
+          aria-label={`Read article: ${stripHtml(article.title)}`}
+          className="flex justify-between items-start gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
+        >
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <Badge className={`${getSourceBadgeClasses(article.source_name)} text-xs px-2 py-1`}>
@@ -103,7 +107,7 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
                 {article.category}
               </Badge>
             </div>
-            <h3 className="font-bold text-base sm:text-lg leading-tight mb-2 line-clamp-2">
+            <h3 className="font-bold text-base sm:text-lg leading-tight mb-2 line-clamp-2 group-hover:text-primary transition-colors">
               {stripHtml(article.title)}
             </h3>
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -125,14 +129,16 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
               e.currentTarget.src = swedenFlag;
             }}
           />
-        </div>
+        </Link>
       </CardHeader>
       
       <CardContent className="pt-0 flex-1 flex flex-col">
         {article.summary && (
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">
-            {stripHtml(article.summary)}
-          </p>
+          <Link to={articleUrl} className="flex-1 mb-4">
+            <p className="text-muted-foreground text-sm line-clamp-3 hover:text-foreground transition-colors">
+              {stripHtml(article.summary)}
+            </p>
+          </Link>
         )}
         
         <div className="flex items-center justify-end gap-2 mt-auto">
