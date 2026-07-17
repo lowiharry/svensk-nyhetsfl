@@ -10,6 +10,7 @@ import { BackToTop } from '@/components/BackToTop';
 import AdSense from '@/components/AdSense';
 import FeaturedHero from '@/components/FeaturedHero';
 import StockTicker from '@/components/StockTicker';
+import HeadlineTicker from '@/components/HeadlineTicker';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useFetchNews } from '@/hooks/use-fetch-news';
@@ -136,6 +137,8 @@ const Index = () => {
         <meta name="twitter:title" content="Sweden Update - Breaking News & Latest Swedish Headlines" />
         <meta name="twitter:description" content="Get the latest breaking news Sweden and Swedish headlines, live updates, politics, economy, weather and crime." />
       </Helmet>
+      {/* Scrolling latest headlines across the very top */}
+      <HeadlineTicker />
       <Header
         onSearch={setSearchQuery}
         onCategoryFilter={setSelectedCategory}
