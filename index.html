@@ -23,6 +23,14 @@
     <link rel="dns-prefetch" href="https://akamai.vgc.no" />
     <link rel="preconnect" href="https://images.stream.schibsted.media" crossorigin />
     <link rel="dns-prefetch" href="https://images.stream.schibsted.media" />
+
+    <!-- Preload branded hero fallback so above-the-fold LCP paints fast -->
+    <link rel="preload" as="image" href="/og-image.jpg" fetchpriority="high" />
+
+    <!-- Ensure any web font swaps to a system fallback while loading to prevent CLS/FOIT -->
+    <style>
+      @font-face { font-display: swap; }
+    </style>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
