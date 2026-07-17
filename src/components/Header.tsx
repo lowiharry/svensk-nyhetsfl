@@ -138,6 +138,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
                 <Input
                   type="text"
                   placeholder="Search news..."
+                  aria-label="Search news"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 h-11"
