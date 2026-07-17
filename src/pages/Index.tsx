@@ -10,6 +10,7 @@ import { BackToTop } from '@/components/BackToTop';
 import AdSense from '@/components/AdSense';
 import FeaturedHero from '@/components/FeaturedHero';
 import StockTicker from '@/components/StockTicker';
+import FootballTicker from '@/components/FootballTicker';
 import HeadlineTicker from '@/components/HeadlineTicker';
 import WeatherBanner from '@/components/WeatherBanner';
 import { Button } from '@/components/ui/button';
@@ -154,6 +155,9 @@ const Index = () => {
 
       {/* Live Swedish stock ticker */}
       <StockTicker />
+
+      {/* Live football scores ticker */}
+      <FootballTicker />
 
       <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Status Bar */}
