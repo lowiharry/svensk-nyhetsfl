@@ -52,7 +52,7 @@ const HeadlineTicker = () => {
 
   return (
     <div
-      className="w-full bg-white text-foreground border-b overflow-hidden flex items-stretch"
+      className="w-full bg-yellow-400 text-foreground border-b overflow-hidden flex items-stretch"
       role="marquee"
       aria-label="Latest Swedish news headlines"
     >
