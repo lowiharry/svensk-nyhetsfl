@@ -31,7 +31,7 @@ const HeadlineTicker = () => {
   const headlines = data ?? [];
   if (headlines.length === 0) {
     // Reserve space to prevent layout shift while data loads
-    return <div className="w-full bg-yellow-400 border-b" style={{ minHeight: 36 }} aria-hidden />;
+    return <div className="w-full bg-primary border-b" style={{ minHeight: 36 }} aria-hidden />;
   }
 
   const row = (
@@ -40,11 +40,11 @@ const HeadlineTicker = () => {
         <Link
           key={`${h.id}-${i}`}
           to={`/article/${encodeURIComponent(h.source_url)}`}
-          className="flex items-center gap-2 text-sm whitespace-nowrap hover:text-primary transition-colors"
+          className="flex items-center gap-2 text-sm whitespace-nowrap hover:text-primary-foreground/80 transition-colors"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+          <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground/70" />
           <span className="font-medium">{h.title}</span>
-          <span className="text-muted-foreground text-xs">— {h.source_name}</span>
+          <span className="text-primary-foreground/90 text-xs">— {h.source_name}</span>
         </Link>
       ))}
     </div>
