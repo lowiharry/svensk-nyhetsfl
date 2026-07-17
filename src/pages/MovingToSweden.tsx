@@ -102,7 +102,7 @@ const MovingToSweden = () => {
 
       <div className="container max-w-4xl mx-auto px-4 py-8">
         <Link to="/">
-          <Button variant="ghost" className="mb-6">
+          <Button variant="ghost" aria-label="Back to home" className="mb-6">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
           </Button>
@@ -116,7 +116,7 @@ const MovingToSweden = () => {
           </p>
 
           <nav aria-label="On this page" className="mb-10 rounded-lg border border-border bg-muted/40 p-4">
-            <h2 className="text-lg font-semibold mb-2">On this page</h2>
+            <h3 className="text-lg font-semibold mb-2">On this page</h3>
             <ul className="list-disc pl-6 space-y-1 text-sm">
               <li><a href="#residency" className="text-primary hover:underline">Residency and visas</a></li>
               <li><a href="#personnummer" className="text-primary hover:underline">Personnummer and registration</a></li>
