@@ -24,7 +24,9 @@ const StockTicker = () => {
   });
 
   const quotes = (data ?? []).filter((q) => q.price != null);
-  if (quotes.length === 0) return null;
+  if (quotes.length === 0) {
+    return <div className="w-full border-y bg-muted/40" style={{ minHeight: 32 }} aria-hidden />;
+  }
 
   const row = (
     <div className="flex shrink-0 items-center gap-8 pr-8">
@@ -54,6 +56,7 @@ const StockTicker = () => {
   return (
     <div
       className="w-full border-y bg-muted/40 overflow-hidden"
+      style={{ minHeight: 32 }}
       role="marquee"
       aria-label="Live Swedish stock trades"
     >

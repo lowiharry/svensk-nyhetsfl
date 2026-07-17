@@ -29,7 +29,10 @@ const HeadlineTicker = () => {
   });
 
   const headlines = data ?? [];
-  if (headlines.length === 0) return null;
+  if (headlines.length === 0) {
+    // Reserve space to prevent layout shift while data loads
+    return <div className="w-full bg-primary border-b" style={{ minHeight: 36 }} aria-hidden />;
+  }
 
   const row = (
     <div className="flex shrink-0 items-center gap-8 pr-8">
