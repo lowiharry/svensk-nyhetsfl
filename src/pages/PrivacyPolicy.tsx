@@ -22,7 +22,7 @@ const PrivacyPolicy = () => {
 
       <div className="container max-w-4xl mx-auto px-4 py-8">
         <Link to="/">
-          <Button variant="ghost" className="mb-6">
+          <Button variant="ghost" aria-label="Back to home" className="mb-6">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
           </Button>

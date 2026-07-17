@@ -157,6 +157,7 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
             <Button
               variant="secondary"
               size="sm"
+              aria-label={`View article: ${stripHtml(article.title)}`}
               className="flex items-center gap-1 h-9 px-3"
             >
               <span className="text-xs">View Article</span>
