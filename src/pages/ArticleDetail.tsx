@@ -244,8 +244,8 @@ export default function ArticleDetail() {
   }
 
   const canonicalUrl = `https://swedenupdate.com/article/${encodeURIComponent(sourceUrl)}`;
-  const articleTitle = `${article.title} - Sweden Update | Latest Swedish News`;
-  const articleDescription = article.summary || article.title;
+  const articleTitle = buildArticleTitle(article.title);
+  const articleDescription = buildArticleDescription(article.summary, article.title);
   
   // Generate SEO keywords based on category
   const categoryKeywords: Record<string, string> = {
