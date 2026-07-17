@@ -11,6 +11,7 @@ import AdSense from '@/components/AdSense';
 import FeaturedHero from '@/components/FeaturedHero';
 import StockTicker from '@/components/StockTicker';
 import HeadlineTicker from '@/components/HeadlineTicker';
+import WeatherBanner from '@/components/WeatherBanner';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useFetchNews } from '@/hooks/use-fetch-news';
@@ -144,6 +145,9 @@ const Index = () => {
         onCategoryFilter={setSelectedCategory}
         selectedCategory={selectedCategory}
       />
+
+      {/* Live Swedish weather banner */}
+      <WeatherBanner />
 
       {/* Featured News Schedule hero — rotates via cron every 2h (Stockholm slots) */}
       <FeaturedHero />
