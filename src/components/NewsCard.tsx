@@ -146,9 +146,10 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
             variant="outline"
             size="sm"
             onClick={handleShare}
+            aria-label="Share article"
             className="h-9 px-3"
           >
-            <Share2 className="w-3 h-3 sm:mr-1" />
+            <Share2 className="w-3 h-3 sm:mr-1" aria-hidden="true" />
             <span className="hidden sm:inline text-xs">Share</span>
           </Button>
           
@@ -166,9 +167,10 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
             variant="ghost"
             size="sm"
             onClick={() => window.open(article.source_url, '_blank')}
+            aria-label="View original article"
             className="flex items-center gap-1 h-9 px-3"
           >
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="w-3 h-3" aria-hidden="true" />
           </Button>
         </div>
       </CardContent>

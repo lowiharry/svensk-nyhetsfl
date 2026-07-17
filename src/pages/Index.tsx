@@ -235,6 +235,7 @@ const Index = () => {
         {/* News Grid */}
         {allArticles.length > 0 && (
           <>
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Latest News</h2>
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {allArticles.map((article) => (
                 <NewsCard key={article.id} article={article} />
