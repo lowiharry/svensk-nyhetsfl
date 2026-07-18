@@ -62,9 +62,9 @@ async function fetchScheduledFeatured(): Promise<FeaturedRow[]> {
 }
 
 const statusStyles: Record<FeaturedRow['status'], string> = {
-  scheduled: 'bg-amber-500/90 text-white',
-  active: 'bg-emerald-500/90 text-white',
-  expired: 'bg-neutral-500/90 text-white',
+  scheduled: 'bg-amber-700 text-white',
+  active: 'bg-emerald-700 text-white',
+  expired: 'bg-neutral-600 text-white',
 };
 
 export const FeaturedHero = () => {

@@ -38,8 +38,8 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
       <div className="container flex h-14 sm:h-16 items-center justify-between px-2 sm:px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-bold text-xs sm:text-sm">🇸🇪</span>
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-full ring-2 ring-secondary flex items-center justify-center flex-shrink-0">
+            <span className="text-primary-foreground font-bold text-xs sm:text-sm">🇸🇪</span>
           </div>
           <div className="min-w-0">
             <span className="text-lg sm:text-xl font-bold text-primary truncate">
