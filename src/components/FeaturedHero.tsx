@@ -225,11 +225,11 @@ export const FeaturedHero = () => {
               <Badge variant="secondary" className="capitalize text-xs sm:text-sm px-2.5 py-0.5">
                 {article.category}
               </Badge>
-              <span className="text-white/90 text-xs sm:text-sm flex items-center gap-1">
+              <span className="text-white text-xs sm:text-sm flex items-center gap-1 drop-shadow">
                 <Clock className="w-3.5 h-3.5" />
                 {formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}
               </span>
-              <span className="text-white/90 text-xs sm:text-sm hidden sm:inline">
+              <span className="text-white text-xs sm:text-sm hidden sm:inline drop-shadow">
                 • Source: <span className="font-medium text-white">{article.source_name}</span>
               </span>
             </div>
@@ -239,7 +239,7 @@ export const FeaturedHero = () => {
             </h2>
 
             {summary && (
-              <p className="mt-3 sm:mt-4 text-white/90 text-sm sm:text-base md:text-lg max-w-3xl line-clamp-2 sm:line-clamp-3 drop-shadow">
+              <p className="mt-3 sm:mt-4 text-white text-sm sm:text-base md:text-lg max-w-3xl line-clamp-2 sm:line-clamp-3 drop-shadow-lg">
                 {summary}
               </p>
             )}
