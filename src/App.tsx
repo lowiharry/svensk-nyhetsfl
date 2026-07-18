@@ -13,6 +13,10 @@ const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const MovingToSweden = lazy(() => import("./pages/MovingToSweden"));
+const NewInSweden = lazy(() => import("./pages/NewInSweden"));
+const JobsForEnglishSpeakers = lazy(() => import("./pages/guides/JobsForEnglishSpeakers"));
+const SwedishRentalMarket = lazy(() => import("./pages/guides/SwedishRentalMarket"));
+const Personnummer = lazy(() => import("./pages/guides/Personnummer"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -42,6 +46,10 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/guides/moving-to-sweden" element={<MovingToSweden />} />
+                <Route path="/guides/new-in-sweden" element={<NewInSweden />} />
+                <Route path="/guides/new-in-sweden/jobs-for-english-speakers" element={<JobsForEnglishSpeakers />} />
+                <Route path="/guides/new-in-sweden/swedish-rental-market" element={<SwedishRentalMarket />} />
+                <Route path="/guides/new-in-sweden/personnummer" element={<Personnummer />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
