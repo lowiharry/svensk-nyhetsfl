@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Badge } from '@/components/ui/badge';
 
 interface Match {
   id: string;
@@ -49,10 +50,10 @@ const FootballTicker = () => {
             </span>
             <span className="font-medium text-foreground">{m.away}</span>
             {live && (
-              <span className="flex items-center gap-1 text-destructive font-semibold text-xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
+              <Badge variant="destructive" className="text-xs uppercase px-1.5 py-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-destructive-foreground animate-pulse mr-1" />
                 {m.status || 'LIVE'}
-              </span>
+              </Badge>
             )}
             {!live && (
               <span
