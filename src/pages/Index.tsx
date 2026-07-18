@@ -160,6 +160,9 @@ const Index = () => {
       {/* Live football scores ticker */}
       <FootballTicker />
 
+      {/* Trending in Sweden banner */}
+      <TrendingSweden />
+
       <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Status Bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 border gap-3 sm:gap-0">
