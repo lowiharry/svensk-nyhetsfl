@@ -27,6 +27,11 @@ const guides = [
     title: 'Applying for a personnummer',
     blurb: 'Step-by-step: eligibility, documents, Skatteverket booking, timelines and what to do while you wait.',
   },
+  {
+    to: '/guides/new-in-sweden/learning-swedish-sfi',
+    title: 'Learning Swedish & SFI',
+    blurb: 'Free SFI courses: eligibility, how to register at your kommun, the four SFI levels, and tips for learning Swedish faster.',
+  },
 ];
 
 const NewInSweden = () => (
