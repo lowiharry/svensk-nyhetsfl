@@ -37,7 +37,7 @@ const TrendingSweden = () => {
       aria-label="Trending in Sweden"
     >
       <div className="flex items-center">
-        <span className="shrink-0 px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground flex items-center gap-1">
+        <span className="shrink-0 px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground flex items-center gap-1 relative z-10">
           <TrendingUp className="w-3 h-3" />
           Trending in Sweden
         </span>

@@ -29,14 +29,14 @@ All colors MUST be HSL.
     --accent: 49 100% 58%; /* Swedish yellow accent */
     --accent-foreground: 210 40% 8%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84.2% 45%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 214 100% 44%; /* Swedish blue ring */
 
-    --success: 142 76% 36%;
+    --success: 142 76% 27%;
     --success-foreground: 355.7 100% 97.3%;
     
     --warning: 32 95% 44%;
@@ -87,15 +87,15 @@ All colors MUST be HSL.
     --accent: 49 95% 65%; /* Lighter Swedish yellow accent */
     --accent-foreground: 210 40% 8%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84.2% 45%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 210 30% 18%;
     --input: 210 30% 18%;
     --ring: 214 100% 55%;
 
-    --success: 142 76% 36%;
-    --success-foreground: 355.7 100% 97.3%;
+    --success: 142 76% 55%;
+    --success-foreground: 210 40% 8%;
     
     --warning: 32 95% 44%;
     --warning-foreground: 210 40% 98%;
