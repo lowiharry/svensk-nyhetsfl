@@ -78,7 +78,7 @@ const FootballTicker = () => {
       style={{ minHeight: 32 }}
     >
       <div className="flex items-center">
-        <span className="shrink-0 px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground">
+        <span className="shrink-0 px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground relative z-10">
           ⚽ Scores
         </span>
         <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
