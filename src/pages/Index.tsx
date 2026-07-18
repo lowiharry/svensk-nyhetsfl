@@ -11,6 +11,7 @@ import AdSense from '@/components/AdSense';
 import FeaturedHero from '@/components/FeaturedHero';
 import StockTicker from '@/components/StockTicker';
 import FootballTicker from '@/components/FootballTicker';
+import TrendingSweden from '@/components/TrendingSweden';
 import HeadlineTicker from '@/components/HeadlineTicker';
 import WeatherBanner from '@/components/WeatherBanner';
 import { Button } from '@/components/ui/button';
