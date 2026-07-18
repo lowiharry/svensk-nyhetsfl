@@ -29,7 +29,7 @@ All colors MUST be HSL.
     --accent: 49 100% 58%; /* Swedish yellow accent */
     --accent-foreground: 210 40% 8%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84.2% 45%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
@@ -87,7 +87,7 @@ All colors MUST be HSL.
     --accent: 49 95% 65%; /* Lighter Swedish yellow accent */
     --accent-foreground: 210 40% 8%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84.2% 45%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 210 30% 18%;
