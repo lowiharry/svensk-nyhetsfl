@@ -39,8 +39,8 @@ const StockTicker = () => {
               {q.price!.toFixed(2)} {q.currency}
             </span>
             <span
-              className={`flex items-center gap-0.5 tabular-nums ${
-                up ? 'text-[hsl(var(--success))]' : 'text-destructive'
+              className={`flex items-center gap-0.5 tabular-nums px-1.5 py-0.5 rounded-md text-xs font-medium ${
+                up ? 'bg-success text-success-foreground' : 'bg-destructive text-destructive-foreground'
               }`}
             >
               {up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
