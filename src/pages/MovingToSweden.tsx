@@ -115,6 +115,22 @@ const MovingToSweden = () => {
             banking, taxes and daily life — so you can get set up quickly and focus on settling in.
           </p>
 
+          <div className="mb-8 rounded-lg border border-primary/30 bg-primary/5 p-4">
+            <p className="text-sm text-foreground">
+              <strong>Part of the </strong>
+              <Link to="/guides/new-in-sweden" className="text-primary font-semibold hover:underline">
+                New in Sweden resource hub
+              </Link>
+              <strong> — dedicated deep-dives on </strong>
+              <Link to="/guides/new-in-sweden/jobs-for-english-speakers" className="text-primary hover:underline">jobs for English speakers</Link>
+              <strong>, </strong>
+              <Link to="/guides/new-in-sweden/swedish-rental-market" className="text-primary hover:underline">the Swedish rental market</Link>
+              <strong>, and </strong>
+              <Link to="/guides/new-in-sweden/personnummer" className="text-primary hover:underline">applying for a personnummer</Link>
+              <strong>.</strong>
+            </p>
+          </div>
+
           <nav aria-label="On this page" className="mb-10 rounded-lg border border-border bg-muted/40 p-4">
             <h2 className="text-lg font-semibold mb-2">On this page</h2>
             <ul className="list-disc pl-6 space-y-1 text-sm">
