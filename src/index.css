@@ -24,7 +24,7 @@ All colors MUST be HSL.
     --secondary-foreground: 210 40% 8%;
 
     --muted: 210 20% 96%;
-    --muted-foreground: 215.4 16.3% 42%;
+    --muted-foreground: 215.4 16.3% 38%;
 
     --accent: 49 100% 58%; /* Swedish yellow accent */
     --accent-foreground: 210 40% 8%;
@@ -82,7 +82,7 @@ All colors MUST be HSL.
     --secondary-foreground: 210 40% 8%;
 
     --muted: 210 30% 15%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215 20.2% 75%;
 
     --accent: 49 95% 65%; /* Lighter Swedish yellow accent */
     --accent-foreground: 210 40% 8%;
