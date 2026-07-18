@@ -246,6 +246,14 @@ export default function ArticleDetail() {
   const canonicalUrl = `https://swedenupdate.com/article/${encodeURIComponent(sourceUrl)}`;
   const articleTitle = buildArticleTitle(article.title);
   const articleDescription = buildArticleDescription(article.summary, article.title);
+
+  // Only allow indexing when served from the canonical host — the lovable.app preview
+  // domain otherwise creates duplicate URLs that GSC flags as "Alternate page with proper canonical tag".
+  const isCanonicalHost =
+    typeof window === 'undefined' ||
+    window.location.hostname === 'swedenupdate.com' ||
+    window.location.hostname === 'www.swedenupdate.com';
+  const articleRobots = isCanonicalHost ? 'index, follow, max-image-preview:large' : 'noindex, follow';
   
   // Generate SEO keywords based on category
   const categoryKeywords: Record<string, string> = {
@@ -327,6 +335,7 @@ export default function ArticleDetail() {
         <meta name="description" content={articleDescription} />
         <meta name="keywords" content={seoKeywords} />
         <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
+        <meta name="robots" content={articleRobots} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={articleDescription} />
