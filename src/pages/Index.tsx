@@ -36,6 +36,16 @@ const Index = () => {
   const [allArticles, setAllArticles] = useState<Article[]>([]);
   const { fetchNews } = useFetchNews();
 
+  // Avoid Search Console "Alternate page with proper canonical tag":
+  // noindex duplicate/filtered variants and non-canonical hosts (e.g. lovable.app preview),
+  // while keeping the canonical homepage indexable.
+  const isCanonicalHost =
+    typeof window === 'undefined' ||
+    window.location.hostname === 'swedenupdate.com' ||
+    window.location.hostname === 'www.swedenupdate.com';
+  const isFilteredView = selectedCategory !== 'all' || searchQuery.length > 0;
+  const robotsContent = !isCanonicalHost || isFilteredView ? 'noindex, follow' : 'index, follow';
+
   const ARTICLES_PER_PAGE = 20;
 
   // Auto-fetch news every 5 minutes (reduces background CPU/network)
@@ -133,6 +143,7 @@ const Index = () => {
         <meta name="description" content="Get the latest breaking news Sweden and Swedish headlines, live updates, politics, economy, weather and crime." />
         <meta name="keywords" content="Sweden news, Swedish news today, breaking news Sweden, latest news Sweden, Sweden live updates, Sweden headlines, Swedish daily news, Sweden top stories, Sweden current events, Sweden breaking stories" />
         <meta name="google-adsense-account" content="ca-pub-3000410248339228" />
+        <meta name="robots" content={robotsContent} />
         <link rel="canonical" href="https://swedenupdate.com/" />
         <meta property="og:title" content="Sweden Update - Breaking News & Latest Swedish Headlines" />
         <meta property="og:description" content="Get the latest breaking news Sweden and Swedish headlines, live updates, politics, economy, weather and crime." />
