@@ -42,7 +42,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
             <span className="text-white font-bold text-xs sm:text-sm">🇸🇪</span>
           </div>
           <div className="min-w-0">
-            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate">
+            <span className="text-lg sm:text-xl font-bold text-primary truncate">
               Sweden Update
             </span>
             <p className="text-xs text-muted-foreground hidden md:block">Latest Swedish News</p>
