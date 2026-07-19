@@ -70,7 +70,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
                 className="pl-10 h-10"
               />
             </div>
-            <Button type="submit" size="sm" className="h-10 px-4">
+            <Button type="submit" size="sm" aria-label="Submit news search" className="h-10 px-4">
               Search
             </Button>
           </form>
@@ -156,7 +156,7 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
                   className="pl-10 h-11"
                 />
               </div>
-              <Button type="submit" size="sm" className="h-11 px-4">
+              <Button type="submit" size="sm" aria-label="Submit news search" className="h-11 px-4">
                 Search
               </Button>
             </form>
