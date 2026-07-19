@@ -71,6 +71,11 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
 
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-1">
+          <Link to="/guides/new-in-sweden">
+            <Button variant="ghost" size="sm" className="h-9">
+              Guides
+            </Button>
+          </Link>
           <Link to="/about">
             <Button variant="ghost" size="sm" className="h-9">
               About
