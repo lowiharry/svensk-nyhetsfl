@@ -152,15 +152,9 @@ export const FeaturedHero = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <section className="relative w-full">
-        <Skeleton className="w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px] rounded-none" />
-      </section>
-    );
-  }
-
-  if (!article) return null;
+  const isReady = !isLoading && article;
+  const imageUrl = article?.image_url || HERO_FALLBACK_URL;
+  const title = article?.title || 'Featured news';
 
   return (
     <section
