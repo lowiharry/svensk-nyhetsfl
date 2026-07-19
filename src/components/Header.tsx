@@ -39,7 +39,14 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
           <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-full ring-2 ring-secondary flex items-center justify-center flex-shrink-0">
-            <span className="text-primary-foreground font-bold text-xs sm:text-sm">🇸🇪</span>
+            <img
+              src="/favicon.png"
+              alt="Sweden Update logo"
+              width={24}
+              height={24}
+              className="w-4 h-4 sm:w-5 sm:h-5 object-contain"
+              loading="eager"
+            />
           </div>
           <div className="min-w-0">
             <span className="text-lg sm:text-xl font-bold text-primary truncate">

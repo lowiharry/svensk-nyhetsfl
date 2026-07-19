@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,19 +8,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import swedenFlag from '@/assets/article-fallback.jpg';
-
-const SEO_ALT_TAGS = [
-  "Latest Sweden news update",
-  "Breaking news in Sweden today",
-  "Sweden Update live headline image",
-  "Current events in Sweden photo",
-  "Swedish news article image",
-  "News photo from Sweden Update website"
-];
-
-const getRandomAltTag = () => {
-  return SEO_ALT_TAGS[Math.floor(Math.random() * SEO_ALT_TAGS.length)];
-};
 interface Article {
   id: string;
   title: string;
@@ -40,12 +27,6 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
   const { toast } = useToast();
 
   const articleUrl = `/article/${encodeURIComponent(article.source_url)}`;
-  // Stable alt tag per article (avoid layout/hydration churn from Math.random on each render)
-  const altTag = useMemo(() => {
-    let hash = 0;
-    for (let i = 0; i < article.id.length; i++) hash = (hash * 31 + article.id.charCodeAt(i)) | 0;
-    return SEO_ALT_TAGS[Math.abs(hash) % SEO_ALT_TAGS.length];
-  }, [article.id]);
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}${articleUrl}`;
@@ -119,7 +100,7 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
           </div>
           <img 
             src={article.image_url || swedenFlag} 
-            alt={`${altTag} - ${article.title}`}
+            alt={stripHtml(article.title)}
             width={96}
             height={96}
             className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0 bg-muted"
