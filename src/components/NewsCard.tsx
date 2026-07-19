@@ -1,26 +1,13 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Share2, ExternalLink, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
-import { stripHtml } from '@/lib/utils';
+import { stripHtml } from '@/components/ui/utils';
 import { Link } from 'react-router-dom';
 import swedenFlag from '@/assets/article-fallback.jpg';
-
-const SEO_ALT_TAGS = [
-  "Latest Sweden news update",
-  "Breaking news in Sweden today",
-  "Sweden Update live headline image",
-  "Current events in Sweden photo",
-  "Swedish news article image",
-  "News photo from Sweden Update website"
-];
-
-const getRandomAltTag = () => {
-  return SEO_ALT_TAGS[Math.floor(Math.random() * SEO_ALT_TAGS.length)];
-};
 interface Article {
   id: string;
   title: string;
