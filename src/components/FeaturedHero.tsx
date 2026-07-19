@@ -161,134 +161,147 @@ export const FeaturedHero = () => {
       aria-label="Featured news"
       className="relative w-full overflow-hidden bg-gradient-to-b from-muted/40 to-background"
     >
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'NewsArticle',
-          headline: article.title,
-          description: summary,
-          image: article.image_url ? [article.image_url] : undefined,
-          datePublished: article.published_at,
-          articleSection: article.category,
-          mainEntityOfPage: {
-            '@type': 'WebPage',
-            '@id': shareUrl || articleUrl,
-          },
-          publisher: {
-            '@type': 'Organization',
-            name: 'Sweden Update',
-          },
-          isBasedOn: article.source_url,
-          author: { '@type': 'Organization', name: article.source_name },
-        })}</script>
-      </Helmet>
+      {isReady && (
+        <Helmet>
+          <script type="application/ld+json">{JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            headline: article.title,
+            description: summary,
+            image: article.image_url ? [article.image_url] : undefined,
+            datePublished: article.published_at,
+            articleSection: article.category,
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': shareUrl || articleUrl,
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'Sweden Update',
+            },
+            isBasedOn: article.source_url,
+            author: { '@type': 'Organization', name: article.source_name },
+          })}</script>
+        </Helmet>
+      )}
 
-      <div key={current?.id ?? 'empty'} className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px] animate-fade-in">
+      <div className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px] animate-fade-in" style={{ aspectRatio: '16 / 9' }}>
         <img
-          src={article.image_url || swedenFlag}
-          alt={article.title}
+          src={imageUrl}
+          alt={title}
           className="absolute inset-0 w-full h-full object-cover"
           width="1200"
           height="675"
           loading="eager"
           fetchPriority="high"
           decoding="async"
-          onError={(e) => { e.currentTarget.src = swedenFlag; }}
+          sizes="100vw"
+          onError={(e) => { e.currentTarget.src = HERO_FALLBACK_URL; }}
         />
         {/* Gradient overlay for legibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
 
-        {/* Top-left status/schedule badges */}
-        <div className="absolute top-3 left-3 sm:top-5 sm:left-5 flex items-center gap-2 flex-wrap">
-          <Badge className="bg-primary/95 text-primary-foreground text-[10px] sm:text-xs uppercase tracking-wider font-bold px-2.5 py-1 shadow-lg">
-            <Radio className="w-3 h-3 mr-1 animate-pulse" />
-            Featured
-          </Badge>
-          <Badge className={`${statusStyles[status]} text-[10px] sm:text-xs uppercase tracking-wider font-semibold px-2.5 py-1 shadow-lg backdrop-blur-sm`}>
-            {status}
-          </Badge>
-          {slotAt && (
-            <Badge variant="outline" className="hidden sm:inline-flex bg-black/70 text-white border-white/20 text-xs backdrop-blur-sm">
-              Slot {format(new Date(slotAt), 'HH:mm')}
-            </Badge>
-          )}
-        </div>
+        {!isReady && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Skeleton className="w-3/4 max-w-2xl h-12" />
+          </div>
+        )}
 
-        {/* Content overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 md:p-10 lg:p-14">
-          <div className="container mx-auto max-w-5xl">
-            <div className="flex items-center gap-2 mb-3 flex-wrap">
-              <Badge variant="secondary" className="capitalize text-xs sm:text-sm px-2.5 py-0.5">
-                {article.category}
+        {isReady && (
+          <>
+            {/* Top-left status/schedule badges */}
+            <div className="absolute top-3 left-3 sm:top-5 sm:left-5 flex items-center gap-2 flex-wrap">
+              <Badge className="bg-primary/95 text-primary-foreground text-[10px] sm:text-xs uppercase tracking-wider font-bold px-2.5 py-1 shadow-lg">
+                <Radio className="w-3 h-3 mr-1 animate-pulse" />
+                Featured
               </Badge>
-              <span className="text-white text-xs sm:text-sm flex items-center gap-1 drop-shadow">
-                <Clock className="w-3.5 h-3.5" />
-                {formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}
-              </span>
-              <span className="text-white text-xs sm:text-sm hidden sm:inline drop-shadow">
-                • Source: <span className="font-medium text-white">{article.source_name}</span>
-              </span>
+              <Badge className={`${statusStyles[status]} text-[10px] sm:text-xs uppercase tracking-wider font-semibold px-2.5 py-1 shadow-lg backdrop-blur-sm`}>
+                {status}
+              </Badge>
+              {slotAt && (
+                <Badge variant="outline" className="hidden sm:inline-flex bg-black/70 text-white border-white/20 text-xs backdrop-blur-sm">
+                  Slot {format(new Date(slotAt), 'HH:mm')}
+                </Badge>
+              )}
             </div>
 
-            <h2 className="text-white font-extrabold leading-tight tracking-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl max-w-4xl drop-shadow-lg line-clamp-3">
-              {stripHtml(article.title)}
-            </h2>
+            {/* Content overlay */}
+            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 md:p-10 lg:p-14">
+              <div className="container mx-auto max-w-5xl">
+                <div className="flex items-center gap-2 mb-3 flex-wrap">
+                  <Badge variant="secondary" className="capitalize text-xs sm:text-sm px-2.5 py-0.5">
+                    {article.category}
+                  </Badge>
+                  <span className="text-white text-xs sm:text-sm flex items-center gap-1 drop-shadow">
+                    <Clock className="w-3.5 h-3.5" />
+                    {formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}
+                  </span>
+                  <span className="text-white text-xs sm:text-sm hidden sm:inline drop-shadow">
+                    • Source: <span className="font-medium text-white">{article.source_name}</span>
+                  </span>
+                </div>
 
-            {summary && (
-              <p className="mt-3 sm:mt-4 text-white text-sm sm:text-base md:text-lg max-w-3xl line-clamp-2 sm:line-clamp-3 drop-shadow-lg">
-                {summary}
-              </p>
-            )}
+                <h2 className="text-white font-extrabold leading-tight tracking-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl max-w-4xl drop-shadow-lg line-clamp-3">
+                  {stripHtml(article.title)}
+                </h2>
 
-            <div className="mt-4 sm:mt-6 flex flex-wrap items-center gap-2 sm:gap-3">
-              <Link to={articleUrl}>
-                <Button size="lg" className="font-semibold shadow-lg">
-                  Read full article
-                </Button>
-              </Link>
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={() => window.open(article.source_url, '_blank', 'noopener,noreferrer')}
-                className="font-medium"
-              >
-                <ExternalLink className="w-4 h-4 mr-1.5" />
-                <span className="hidden sm:inline">Original source</span>
-                <span className="sm:hidden">Source</span>
-              </Button>
+                {summary && (
+                  <p className="mt-3 sm:mt-4 text-white text-sm sm:text-base md:text-lg max-w-3xl line-clamp-2 sm:line-clamp-3 drop-shadow-lg">
+                    {summary}
+                  </p>
+                )}
 
-              <div className="flex items-center gap-1.5 ml-auto">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Share"
-                  onClick={handleNativeShare}
-                  className="text-white hover:bg-white/15 h-10 w-10"
-                >
-                  <Share2 className="w-4 h-4" />
-                </Button>
-                <a
-                  aria-label="Share on Facebook"
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center h-10 w-10 rounded-md text-white hover:bg-white/15 transition-colors"
-                >
-                  <Facebook className="w-4 h-4" />
-                </a>
-                <a
-                  aria-label="Share on Twitter"
-                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center h-10 w-10 rounded-md text-white hover:bg-white/15 transition-colors"
-                >
-                  <Twitter className="w-4 h-4" />
-                </a>
+                <div className="mt-4 sm:mt-6 flex flex-wrap items-center gap-2 sm:gap-3">
+                  <Link to={articleUrl}>
+                    <Button size="lg" className="font-semibold shadow-lg">
+                      Read full article
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    onClick={() => window.open(article.source_url, '_blank', 'noopener,noreferrer')}
+                    className="font-medium"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-1.5" />
+                    <span className="hidden sm:inline">Original source</span>
+                    <span className="sm:hidden">Source</span>
+                  </Button>
+
+                  <div className="flex items-center gap-1.5 ml-auto">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Share"
+                      onClick={handleNativeShare}
+                      className="text-white hover:bg-white/15 h-10 w-10"
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </Button>
+                    <a
+                      aria-label="Share on Facebook"
+                      href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center h-10 w-10 rounded-md text-white hover:bg-white/15 transition-colors"
+                    >
+                      <Facebook className="w-4 h-4" />
+                    </a>
+                    <a
+                      aria-label="Share on Twitter"
+                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center h-10 w-10 rounded-md text-white hover:bg-white/15 transition-colors"
+                    >
+                      <Twitter className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </section>
   );
