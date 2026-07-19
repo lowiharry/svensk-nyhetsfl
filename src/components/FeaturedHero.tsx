@@ -153,6 +153,10 @@ export const FeaturedHero = () => {
   const isReady = !isLoading && article;
   const imageUrl = article?.image_url || HERO_FALLBACK_URL;
   const title = article?.title || 'Featured news';
+  const cleanTitle = article ? stripHtml(article.title) : '';
+  const heroAlt = article
+    ? `Photo accompanying the featured Sweden Update story: ${cleanTitle}`
+    : 'Sweden Update featured news banner';
 
   return (
     <section
@@ -186,7 +190,7 @@ export const FeaturedHero = () => {
       <div className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px] animate-fade-in" style={{ aspectRatio: '16 / 9' }}>
         <img
           src={imageUrl}
-          alt={title}
+          alt={heroAlt}
           className="absolute inset-0 w-full h-full object-cover"
           width="1200"
           height="675"
@@ -270,14 +274,14 @@ export const FeaturedHero = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      aria-label="Share"
+                      aria-label={`Share article: ${cleanTitle}`}
                       onClick={handleNativeShare}
                       className="text-white hover:bg-white/15 h-10 w-10"
                     >
                       <Share2 className="w-4 h-4" />
                     </Button>
                     <a
-                      aria-label="Share on Facebook"
+                      aria-label={`Share on Facebook: ${cleanTitle}`}
                       href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -286,7 +290,7 @@ export const FeaturedHero = () => {
                       <Facebook className="w-4 h-4" />
                     </a>
                     <a
-                      aria-label="Share on Twitter"
+                      aria-label={`Share on Twitter: ${cleanTitle}`}
                       href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`}
                       target="_blank"
                       rel="noopener noreferrer"
