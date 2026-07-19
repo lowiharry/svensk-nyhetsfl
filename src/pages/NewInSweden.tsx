@@ -32,6 +32,11 @@ const guides = [
     title: 'Learning Swedish & SFI',
     blurb: 'Free SFI courses: eligibility, how to register at your kommun, the four SFI levels, and tips for learning Swedish faster.',
   },
+  {
+    to: '/guides/aftonbladet-vs-expressen',
+    title: 'Aftonbladet vs Expressen in English',
+    blurb: 'How to read Sweden’s two biggest tabloids in English: editorial styles, Sportbladet, paywalls and translation tips.',
+  },
 ];
 
 const NewInSweden = () => (
