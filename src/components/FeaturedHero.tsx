@@ -12,6 +12,8 @@ import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import swedenFlag from '@/assets/article-fallback.jpg';
 
+const HERO_FALLBACK_URL = '/og-image.jpg';
+
 type Article = {
   id: string;
   title: string;
