@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Share2, ExternalLink, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
-import { stripHtml } from '@/components/ui/utils';
+import { stripHtml } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import swedenFlag from '@/assets/article-fallback.jpg';
 interface Article {
@@ -27,12 +27,6 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
   const { toast } = useToast();
 
   const articleUrl = `/article/${encodeURIComponent(article.source_url)}`;
-  // Stable alt tag per article (avoid layout/hydration churn from Math.random on each render)
-  const altTag = useMemo(() => {
-    let hash = 0;
-    for (let i = 0; i < article.id.length; i++) hash = (hash * 31 + article.id.charCodeAt(i)) | 0;
-    return SEO_ALT_TAGS[Math.abs(hash) % SEO_ALT_TAGS.length];
-  }, [article.id]);
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}${articleUrl}`;
