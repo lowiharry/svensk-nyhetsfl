@@ -18,6 +18,7 @@ const JobsForEnglishSpeakers = lazy(() => import("./pages/guides/JobsForEnglishS
 const SwedishRentalMarket = lazy(() => import("./pages/guides/SwedishRentalMarket"));
 const Personnummer = lazy(() => import("./pages/guides/Personnummer"));
 const LearningSwedishSFI = lazy(() => import("./pages/guides/LearningSwedishSFI"));
+const AftonbladetVsExpressen = lazy(() => import("./pages/guides/AftonbladetVsExpressen"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -52,6 +53,7 @@ const App = () => (
                 <Route path="/guides/new-in-sweden/swedish-rental-market" element={<SwedishRentalMarket />} />
                 <Route path="/guides/new-in-sweden/personnummer" element={<Personnummer />} />
                 <Route path="/guides/new-in-sweden/learning-swedish-sfi" element={<LearningSwedishSFI />} />
+                <Route path="/guides/aftonbladet-vs-expressen" element={<AftonbladetVsExpressen />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
