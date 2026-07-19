@@ -71,6 +71,11 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
 
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-1">
+          <Link to="/guides/new-in-sweden">
+            <Button variant="ghost" size="sm" className="h-9">
+              Guides
+            </Button>
+          </Link>
           <Link to="/about">
             <Button variant="ghost" size="sm" className="h-9">
               About
@@ -151,6 +156,11 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
 
             {/* Mobile Navigation Links */}
             <div className="flex flex-col gap-2 mb-4">
+              <Link to="/guides/new-in-sweden" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start h-11">
+                  Guides
+                </Button>
+              </Link>
               <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start h-11">
                   About
