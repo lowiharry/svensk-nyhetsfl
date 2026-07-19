@@ -191,7 +191,7 @@ export const FeaturedHero = () => {
           width="1200"
           height="675"
           loading="eager"
-          fetchPriority="high"
+          fetchpriority="high"
           decoding="async"
           sizes="100vw"
           onError={(e) => { e.currentTarget.src = HERO_FALLBACK_URL; }}
