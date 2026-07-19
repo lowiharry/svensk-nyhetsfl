@@ -100,7 +100,7 @@ const NewsCardComponent = ({ article }: NewsCardProps) => {
           </div>
           <img 
             src={article.image_url || swedenFlag} 
-            alt={`${altTag} - ${article.title}`}
+            alt={stripHtml(article.title)}
             width={96}
             height={96}
             className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0 bg-muted"
