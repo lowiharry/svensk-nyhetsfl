@@ -192,10 +192,13 @@ const Index = () => {
           </div>
         </div>
 
-        {/* SEO Heading - Hidden visually but important for SEO */}
-        <h1 className="sr-only">
-          Breaking News Sweden Today - Latest Swedish News Headlines and Live Updates
+        {/* Page heading - visible to all users and describes the page */}
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+          Latest Swedish News and Headlines
         </h1>
+        <p className="text-muted-foreground mb-6">
+          Real-time updates from Sweden's top news sources
+        </p>
 
         {/* Search/Filter Results */}
         {(searchQuery || selectedCategory !== 'all') && (
