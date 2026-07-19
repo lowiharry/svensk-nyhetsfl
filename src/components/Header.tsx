@@ -156,6 +156,11 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
 
             {/* Mobile Navigation Links */}
             <div className="flex flex-col gap-2 mb-4">
+              <Link to="/guides/new-in-sweden" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start h-11">
+                  Guides
+                </Button>
+              </Link>
               <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start h-11">
                   About
