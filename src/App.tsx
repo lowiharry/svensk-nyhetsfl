@@ -20,6 +20,7 @@ const Personnummer = lazy(() => import("./pages/guides/Personnummer"));
 const LearningSwedishSFI = lazy(() => import("./pages/guides/LearningSwedishSFI"));
 const AftonbladetVsExpressen = lazy(() => import("./pages/guides/AftonbladetVsExpressen"));
 const EssentialSwedishVocabulary = lazy(() => import("./pages/guides/EssentialSwedishVocabulary"));
+const ImmigrationPolicyUpdates = lazy(() => import("./pages/guides/ImmigrationPolicyUpdates"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -56,6 +57,7 @@ const App = () => (
                 <Route path="/guides/new-in-sweden/learning-swedish-sfi" element={<LearningSwedishSFI />} />
                 <Route path="/guides/aftonbladet-vs-expressen" element={<AftonbladetVsExpressen />} />
                 <Route path="/guides/new-in-sweden/essential-swedish-vocabulary" element={<EssentialSwedishVocabulary />} />
+                <Route path="/guides/immigration-policy-updates" element={<ImmigrationPolicyUpdates />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
