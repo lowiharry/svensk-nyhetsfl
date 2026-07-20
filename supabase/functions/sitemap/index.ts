@@ -154,6 +154,12 @@ serve(async (req) => {
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>${baseUrl}/guides/new-in-sweden/essential-swedish-vocabulary</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>${baseUrl}/guides/aftonbladet-vs-expressen</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>monthly</changefreq>
