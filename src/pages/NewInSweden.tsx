@@ -37,6 +37,11 @@ const guides = [
     title: 'Aftonbladet vs Expressen in English',
     blurb: 'How to read Sweden’s two biggest tabloids in English: editorial styles, Sportbladet, paywalls and translation tips.',
   },
+  {
+    to: '/guides/new-in-sweden/essential-swedish-vocabulary',
+    title: 'Essential Swedish vocabulary for expats',
+    blurb: 'Key Swedish words every newcomer needs: fika, personnummer, skatt, sambo, lagom, and more with pronunciation and context.',
+  },
 ];
 
 const NewInSweden = () => (
