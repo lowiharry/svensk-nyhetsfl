@@ -406,7 +406,7 @@ export default function ArticleDetail() {
           >
             <img
               src={article.image_url || swedenFlag}
-              alt={`${getRandomAltTag()} - ${article.title}`}
+              alt={buildArticleImageAlt(article.title)}
               width={1280}
               height={720}
               decoding="async"
