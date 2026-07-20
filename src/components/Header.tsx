@@ -130,7 +130,8 @@ export const Header = ({ onSearch, onCategoryFilter, selectedCategory }: HeaderP
           <Button
             variant="outline"
             size="sm"
-            aria-label="Open navigation menu"
+            aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMobileMenuOpen}
             className="lg:hidden h-9 w-9 p-0"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
