@@ -10,7 +10,8 @@ import { Clock, ExternalLink, Share2, Facebook, Twitter, Radio } from 'lucide-re
 import { formatDistanceToNow, format } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
-const HERO_FALLBACK_URL = '/og-image.jpg';
+const HERO_FALLBACK_AVIF_URL = '/og-image.avif';
+const HERO_FALLBACK_WEBP_URL = '/og-image.webp';
 
 type Article = {
   id: string;
@@ -151,7 +152,8 @@ export const FeaturedHero = () => {
   };
 
   const isReady = !isLoading && article;
-  const imageUrl = article?.image_url || HERO_FALLBACK_URL;
+  const isUsingFallbackImage = !article?.image_url;
+  const imageUrl = article?.image_url || HERO_FALLBACK_WEBP_URL;
   const title = article?.title || 'Featured news';
   const cleanTitle = article ? stripHtml(article.title) : '';
   const heroAlt = article
@@ -187,19 +189,23 @@ export const FeaturedHero = () => {
         </Helmet>
       )}
 
-      <div className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px] animate-fade-in" style={{ aspectRatio: '16 / 9' }}>
-        <img
-          src={imageUrl}
-          alt={heroAlt}
-          className="absolute inset-0 w-full h-full object-cover"
-          width="1200"
-          height="675"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          sizes="100vw"
-          onError={(e) => { e.currentTarget.src = HERO_FALLBACK_URL; }}
-        />
+      <div className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px]" style={{ aspectRatio: '16 / 9' }}>
+        <picture className="absolute inset-0 block h-full w-full">
+          {isUsingFallbackImage && <source srcSet={HERO_FALLBACK_AVIF_URL} type="image/avif" />}
+          {isUsingFallbackImage && <source srcSet={HERO_FALLBACK_WEBP_URL} type="image/webp" />}
+          <img
+            src={imageUrl}
+            alt={heroAlt}
+            className="h-full w-full object-cover"
+            width="1200"
+            height="675"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            sizes="100vw"
+            onError={(e) => { e.currentTarget.src = HERO_FALLBACK_WEBP_URL; }}
+          />
+        </picture>
         {/* Gradient overlay for legibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
 
