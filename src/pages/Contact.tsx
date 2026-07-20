@@ -45,7 +45,7 @@ const Contact = () => {
             We'd love to hear from you. Get in touch with us for any inquiries or feedback.
           </p>
         </div>
-        <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
+        <h2 className="text-xl font-semibold mb-6">Get in Touch</h2>
 
         <Card>
           <CardHeader>
