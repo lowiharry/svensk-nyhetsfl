@@ -42,6 +42,11 @@ const guides = [
     title: 'Essential Swedish vocabulary for expats',
     blurb: 'Key Swedish words every newcomer needs: fika, personnummer, skatt, sambo, lagom, and more with pronunciation and context.',
   },
+  {
+    to: '/guides/immigration-policy-updates',
+    title: 'Sweden immigration policy changes 2024–2026',
+    blurb: 'Higher work-permit salary thresholds, stricter permanent residency and the 2026 citizenship reform — what expats need to know.',
+  },
 ];
 
 const NewInSweden = () => (

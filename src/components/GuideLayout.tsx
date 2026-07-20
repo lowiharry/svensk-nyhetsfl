@@ -138,6 +138,7 @@ const GuideLayout = ({
             <li><Link to="/guides/new-in-sweden/learning-swedish-sfi" className="text-primary hover:underline">Learning Swedish & SFI</Link></li>
             <li><Link to="/guides/new-in-sweden/essential-swedish-vocabulary" className="text-primary hover:underline">Essential Swedish vocabulary</Link></li>
             <li><Link to="/guides/aftonbladet-vs-expressen" className="text-primary hover:underline">Aftonbladet vs Expressen in English</Link></li>
+            <li><Link to="/guides/immigration-policy-updates" className="text-primary hover:underline">Sweden immigration policy changes</Link></li>
           </ul>
         </aside>
       </div>
