@@ -5,12 +5,12 @@ import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Clock, ExternalLink, Share2, Facebook, Twitter, Radio } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { stripHtml } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
-const HERO_FALLBACK_URL = '/og-image.jpg';
+const HERO_FALLBACK_AVIF_URL = '/og-image.avif';
+const HERO_FALLBACK_WEBP_URL = '/og-image.webp';
 
 type Article = {
   id: string;
@@ -151,8 +151,9 @@ export const FeaturedHero = () => {
   };
 
   const isReady = !isLoading && article;
-  const imageUrl = article?.image_url || HERO_FALLBACK_URL;
-  const title = article?.title || 'Featured news';
+  const isUsingFallbackImage = !article?.image_url;
+  const imageUrl = article?.image_url || HERO_FALLBACK_WEBP_URL;
+  const title = article?.title || 'Sweden Update: Latest Swedish News';
   const cleanTitle = article ? stripHtml(article.title) : '';
   const heroAlt = article
     ? `Photo accompanying the featured Sweden Update story: ${cleanTitle}`
@@ -187,25 +188,40 @@ export const FeaturedHero = () => {
         </Helmet>
       )}
 
-      <div className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px] animate-fade-in" style={{ aspectRatio: '16 / 9' }}>
-        <img
-          src={imageUrl}
-          alt={heroAlt}
-          className="absolute inset-0 w-full h-full object-cover"
-          width="1200"
-          height="675"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          sizes="100vw"
-          onError={(e) => { e.currentTarget.src = HERO_FALLBACK_URL; }}
-        />
+      <div className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[560px]" style={{ aspectRatio: '16 / 9' }}>
+        <picture className="absolute inset-0 block h-full w-full">
+          {isUsingFallbackImage && <source srcSet={HERO_FALLBACK_AVIF_URL} type="image/avif" />}
+          {isUsingFallbackImage && <source srcSet={HERO_FALLBACK_WEBP_URL} type="image/webp" />}
+          <img
+            src={imageUrl}
+            alt={heroAlt}
+            className="h-full w-full object-cover"
+            width="1200"
+            height="675"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            sizes="100vw"
+            onError={(e) => { e.currentTarget.src = HERO_FALLBACK_WEBP_URL; }}
+          />
+        </picture>
         {/* Gradient overlay for legibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
 
         {!isReady && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Skeleton className="w-3/4 max-w-2xl h-12" />
+          <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 md:p-10 lg:p-14">
+            <div className="container mx-auto max-w-5xl">
+              <Badge className="mb-3 bg-primary/95 text-primary-foreground text-[10px] sm:text-xs uppercase tracking-wider font-bold px-2.5 py-1 shadow-lg">
+                <Radio className="w-3 h-3 mr-1 animate-pulse" />
+                Featured
+              </Badge>
+              <h2 className="text-white font-extrabold leading-tight tracking-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl max-w-4xl drop-shadow-lg">
+                {title}
+              </h2>
+              <p className="mt-3 sm:mt-4 text-white text-sm sm:text-base md:text-lg max-w-3xl drop-shadow-lg">
+                Breaking news Sweden, live updates, politics, economy, weather and major Swedish headlines.
+              </p>
+            </div>
           </div>
         )}
 
