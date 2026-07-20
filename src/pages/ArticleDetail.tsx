@@ -20,17 +20,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import swedenFlag from '@/assets/article-fallback.jpg';
 
-const SEO_ALT_TAGS = [
-  "Latest Sweden news update",
-  "Breaking news in Sweden today",
-  "Sweden Update live headline image",
-  "Current events in Sweden photo",
-  "Swedish news article image",
-  "News photo from Sweden Update website"
-];
-
-const getRandomAltTag = () => {
-  return SEO_ALT_TAGS[Math.floor(Math.random() * SEO_ALT_TAGS.length)];
+const buildArticleImageAlt = (title: string) => {
+  const cleanTitle = stripHtml(title).trim();
+  return cleanTitle ? `Article image: ${cleanTitle}` : 'Sweden Update article image';
 };
 
 function truncateAtWord(text: string, maxLength: number): string {
