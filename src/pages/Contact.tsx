@@ -45,7 +45,7 @@ const Contact = () => {
             We'd love to hear from you. Get in touch with us for any inquiries or feedback.
           </p>
         </div>
-        <h2 className="text-xl font-semibold mb-6">Get in Touch</h2>
+        <h3 className="text-xl font-semibold mb-6">Get in Touch</h3>
 
         <Card>
           <CardHeader>
@@ -70,21 +70,21 @@ const Contact = () => {
             
             <div className="mt-6 space-y-4">
               <div>
-                <h3 className="font-semibold mb-2">General Inquiries</h3>
+                <h4 className="font-semibold mb-2">General Inquiries</h4>
                 <p className="text-sm text-muted-foreground">
                   For general questions about Sweden Update and our services
                 </p>
               </div>
               
               <div>
-                <h3 className="font-semibold mb-2">Partnership Opportunities</h3>
+                <h4 className="font-semibold mb-2">Partnership Opportunities</h4>
                 <p className="text-sm text-muted-foreground">
                   Interested in partnering with us? We'd love to discuss collaboration opportunities
                 </p>
               </div>
               
               <div>
-                <h3 className="font-semibold mb-2">Feedback & Suggestions</h3>
+                <h4 className="font-semibold mb-2">Feedback & Suggestions</h4>
                 <p className="text-sm text-muted-foreground">
                   Your feedback helps us improve. Share your thoughts and suggestions with us
                 </p>
