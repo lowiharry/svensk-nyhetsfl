@@ -1,6 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Helmet } from 'react-helmet-async';
 import { TrendingUp } from 'lucide-react';
+
+const BASE_KEYWORDS = [
+  'Sweden news',
+  'Swedish news today',
+  'breaking news Sweden',
+  'Sweden headlines',
+  'trending in Sweden',
+];
 
 const TrendingSweden = () => {
   const { data } = useQuery({
@@ -19,6 +28,20 @@ const TrendingSweden = () => {
     return <div className="w-full border-b bg-muted/40" style={{ minHeight: 32 }} aria-hidden />;
   }
 
+  const seoTopics = topics.slice(0, 15);
+  const keywords = [...BASE_KEYWORDS, ...seoTopics.map((t) => `${t} Sweden`)].join(', ');
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Trending in Sweden',
+    description: `Topics trending in Sweden right now: ${seoTopics.join(', ')}.`,
+    itemListElement: seoTopics.map((topic, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: topic,
+    })),
+  };
+
   const row = (
     <div className="flex shrink-0 items-center gap-6 pr-6">
       {topics.map((topic, i) => (
@@ -30,6 +53,11 @@ const TrendingSweden = () => {
   );
 
   return (
+    <>
+      <Helmet>
+        <meta name="keywords" content={keywords} />
+        <script type="application/ld+json">{JSON.stringify(itemListJsonLd)}</script>
+      </Helmet>
     <div
       className="w-full border-b bg-muted/40 overflow-hidden"
       style={{ minHeight: 32 }}
@@ -46,7 +74,14 @@ const TrendingSweden = () => {
           {row}
         </div>
       </div>
+      <h2 className="sr-only">Trending in Sweden today</h2>
+      <ul className="sr-only">
+        {seoTopics.map((topic) => (
+          <li key={`seo-${topic}`}>{topic} — trending news in Sweden</li>
+        ))}
+      </ul>
     </div>
+    </>
   );
 };
 
