@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
     const skip = new Set(['Huvudsida', 'Special:Search', '-']);
     const topics = articles
       .map((a) => a.article)
-      .filter((t) => t && !t.startsWith('Special:') && !t.startsWith('Wikipedia:') && !skip.has(t))
+      .filter((t) => t && !/^(Special|Wikipedia|Portal|Kategori|Fil|Diskussion|Anv%C3%A4ndare):/.test(t) && !t.includes('.phtml') && !skip.has(t))
       .slice(0, 20)
       .map((t) => t.replace(/_/g, ' '));
 
